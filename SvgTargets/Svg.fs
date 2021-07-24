@@ -67,6 +67,47 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                     , attr "fill" (if circleRadius <= dotSizeRing then color strokeColor else (color ring.Fill))
                     )
         |]
+    let ruler =
+        let dimeDiameter = 0.01791<m>
+        let stroke = 0.0005<m>
+        let radius = dimeDiameter * 0.5 - stroke * 0.5
+        XElement(xn "g"
+            , XElement(xn "circle"
+                , attr "id" "ruler-circle"
+                , attr "cx" (mm dimeDiameter)
+                , attr "cy" (mm (snd target.PaperSize - dimeDiameter))
+                , attr "r" (mm radius)
+                , attr "stroke-width" (mm stroke)
+                , attr "stroke" (color Black)
+                , attr "fill" (color White)
+                )
+            , XElement(xn "text"
+                , attr "id" "ruler-info-1"
+                , attr "x" (mm dimeDiameter)
+                , attr "y" (mm (snd target.PaperSize - dimeDiameter))
+                , attr "text-anchor" "middle"
+                , attr "dominant-baseline" "central"
+                , attr "stroke" "none"
+                , attr "fill" (color Black)
+                , attr "font-size" (mm 0.003<m>)
+                , attr "font-family" "sans-serif"
+                , "O.D. = 10¢"
+                )
+            )
+    let info =
+        let infoText = target.Identifier + " | " + target.Name + " | SVGTargets.com"
+        XElement(xn "text"
+            , attr "id" "target-info"
+            , attr "x" (mm centerX)
+            , attr "y" (mm (snd target.PaperSize - 0.006<m>))
+            , attr "text-anchor" "middle"
+            , attr "dominant-baseline" "central"
+            , attr "stroke" "none"
+            , attr "fill" (color Black)
+            , attr "font-size" (mm 0.003<m>)
+            , attr "font-family" "sans-serif"
+            , infoText
+            )
     let labels =
         let minGapForLabel = 0.004<m>
         let _, smallestGapBetweenRings =
@@ -124,5 +165,7 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                 )
             , XElement(xn "g", [| yield attr "id" "rings" :> obj; for ring in rings do yield upcast ring |])
             , XElement(xn "g", [| yield attr "id" "ring-labels" :> obj; for label in labels do yield upcast label |])
+            , if config.IncludeInfo then info else null
+            , if config.IncludeRuler then ruler else null
             )
     XDocument(svgElement)

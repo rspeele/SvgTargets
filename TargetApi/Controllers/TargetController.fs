@@ -25,6 +25,8 @@ type TargetController () =
         , ringThickness : Nullable<float>
         , black : string
         , white : string
+        , info : Nullable<int>
+        , dime : Nullable<int>
         ) =
         let target = Targets.allTargets |> Seq.tryFind (fun t -> t.Organization = organization && t.Identifier = identifier)
         match target with
@@ -43,8 +45,8 @@ type TargetController () =
                 Scaling.scale scaleOldCaliber scaleNewCaliber scaleDistance target
 
             let config =
-                {   IncludeRuler = true
-                    IncludeInfo = true
+                {   IncludeRuler = dime <> Nullable(0)
+                    IncludeInfo = info <> Nullable(0)
                     RingThickness = if ringThickness.HasValue then ringThickness.Value * 1.0<m> else (min 25.0<m> target.Distance) * 0.00002
                     BlackOverride = if isNull black then None else Some black
                     WhiteOverride = if isNull white then None else Some white
