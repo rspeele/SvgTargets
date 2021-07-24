@@ -49,7 +49,8 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                     if i > 0 then Some bigToSmall.[i-1] else None
                 // The stroke will expand the effective radius of the ring, so we make the circle radius a little smaller.
                 // Goal is to have the OUTSIDE edge of the ring, including stroke, match exactly the defined size for scoring purposes.
-                let circleRadius = ring.Radius - config.RingThickness * 0.5
+                let dotSizeRing = 0.0001<m>
+                let circleRadius = max dotSizeRing (ring.Radius - config.RingThickness * 0.5)
                 let strokeColor =
                     let outerColor =
                         match largerRing with
@@ -63,13 +64,19 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                     , attr "r" (mm circleRadius)
                     , attr "stroke-width" (mm config.RingThickness)
                     , attr "stroke" (color strokeColor)
-                    , attr "fill" (color ring.Fill)
+                    , attr "fill" (if circleRadius <= dotSizeRing then color strokeColor else (color ring.Fill))
                     )
         |]
     let labels =
+        let minGapForLabel = 0.004<m>
         let _, smallestGapBetweenRings =
             bigToSmall
-            |> Seq.fold (fun (previousRadius, soFar) thisRing -> (thisRing.Radius, min soFar (previousRadius - thisRing.Radius))) target.PaperSize
+            |> Seq.fold (fun (previousRadius, soFar) thisRing ->
+                let gap = previousRadius - thisRing.Radius
+                let newSmallest =
+                    if gap < minGapForLabel then soFar
+                    else min soFar gap
+                (thisRing.Radius, newSmallest)) target.PaperSize
         [|  for i, ring in bigToSmall |> Seq.indexed do
                 let smallerRingRadius =
                     if i < bigToSmall.Length - 1 then Some bigToSmall.[i+1].Radius else None
@@ -88,13 +95,14 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                         )
                 match smallerRingRadius with
                 | None ->
-                    if target.LabelClockPositions.Length > 0 then
+                    if target.LabelClockPositions.Length > 0 && ring.Radius >= minGapForLabel then
                         yield textElem "x" (mm centerX) (mm centerY)
                 | Some smallerRingRadius ->
-                    let middleRadius = smallerRingRadius + 0.5 * (ring.Radius - smallerRingRadius)
-                    for clock in target.LabelClockPositions do
-                        let (x, y) = offsetClock (centerX, centerY) clock middleRadius
-                        yield textElem (string clock) (mm x) (mm y)
+                    if ring.Radius - smallerRingRadius >= minGapForLabel then
+                        let middleRadius = smallerRingRadius + 0.5 * (ring.Radius - smallerRingRadius)
+                        for clock in defaultArg ring.LabelClockPositionsOverride target.LabelClockPositions do
+                            let (x, y) = offsetClock (centerX, centerY) clock middleRadius
+                            yield textElem (string clock) (mm x) (mm y)
         |]
     let svgElement =
         XElement(xn "svg"

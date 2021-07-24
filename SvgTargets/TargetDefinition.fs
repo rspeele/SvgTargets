@@ -13,6 +13,7 @@ type RingDefinition =
     {   Radius : float<m>
         Label : string
         Fill : RingFill
+        LabelClockPositionsOverride : float array option
     }
 
 type TargetDefinition =
@@ -35,6 +36,7 @@ module Targets =
         {   Label = label
             Radius = radius
             Fill = White
+            LabelClockPositionsOverride = None
         }
 
     let private black (ring : RingDefinition) = { ring with Fill = Black }
@@ -159,4 +161,27 @@ module Targets =
                 LabelClockPositions = [| 3.0; 9.0 |]
             }
 
-        let allTargets = [| b2; b3; b4; b5; b6; b8; b16 |]
+        let b40 =
+            let mmdi x = mm (x * 0.5)
+            {   Organization = nra
+                Identifier = "B-40"
+                Name = "International 10 meter air pistol target"
+                Rings =
+                    [|  ring "X" (mmdi 5.0) |> black
+                        ring "10" (mmdi 11.5) |> black
+                        ring "9" (mmdi 27.5) |> black
+                        ring "8" (mmdi 43.5) |> black
+                        ring "7" (mmdi 59.5) |> black
+                        ring "6" (mmdi 75.5)
+                        ring "5" (mmdi 91.5)
+                        ring "4" (mmdi 107.5)
+                        ring "3" (mmdi 123.5)
+                        ring "2" (mmdi 139.5)
+                        ring "1" (mmdi 155.5)
+                    |]
+                PaperSize = (inch 7.0, inch 8.0)
+                Distance = yard 11.0
+                LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+            }
+
+        let allTargets = [| b2; b3; b4; b5; b6; b8; b16; b40 |]
