@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SvgTargets", "SvgTargets\SvgTargets.fsproj", "{DE9D2C8D-CB69-4FF7-8580-C95950FC3866}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "SvgTargets", "SvgTargets\SvgTargets.fsproj", "{DE9D2C8D-CB69-4FF7-8580-C95950FC3866}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "TargetApi", "TargetApi\TargetApi.fsproj", "{7038D6D1-2945-494E-A733-CA1452D6E858}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{DE9D2C8D-CB69-4FF7-8580-C95950FC3866}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE9D2C8D-CB69-4FF7-8580-C95950FC3866}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE9D2C8D-CB69-4FF7-8580-C95950FC3866}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7038D6D1-2945-494E-A733-CA1452D6E858}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7038D6D1-2945-494E-A733-CA1452D6E858}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7038D6D1-2945-494E-A733-CA1452D6E858}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7038D6D1-2945-494E-A733-CA1452D6E858}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -185,3 +185,5 @@ module Targets =
             }
 
         let allTargets = [| b2; b3; b4; b5; b6; b8; b16; b40 |]
+
+    let allTargets = NRA.allTargets
