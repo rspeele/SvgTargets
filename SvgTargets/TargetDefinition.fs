@@ -183,7 +183,127 @@ module Targets =
                 LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
             }
 
-        let allTargets = [| b2; b3; b4; b5; b6; b8; b16; b40 |]
+        let sr1 =
+            {   Organization = nra
+                Identifier = "SR-1"
+                Name = "100-yard reduction of SR 200y target"
+                Rings =
+                    [|  ring "X" (inchdi 1.35) |> black
+                        ring "10" (inchdi 3.35) |> black
+                        ring "9" (inchdi 6.35) |> black
+                        ring "8" (inchdi 9.35)
+                        ring "7" (inchdi 12.35)
+                        ring "6" (inchdi 15.35)
+                        ring "5" (inchdi 18.35)
+                    |]
+                PaperSize = (inch 20.0, inch 20.0)
+                Distance = yard 100.0
+                LabelClockPositions = [| 3.0 |]
+            }
+
+        let sr21 =
+            {   Organization = nra
+                Identifier = "SR-21"
+                Name = "100-yard reduction of SR-3 300y target"
+                Rings =
+                    [|  ring "X" (inchdi 0.79) |> black
+                        ring "10" (inchdi 2.12) |> black
+                        ring "9" (inchdi 4.12) |> black
+                        ring "8" (inchdi 6.12) |> black
+                        ring "7" (inchdi 8.12)
+                        ring "6" (inchdi 10.12)
+                        ring "5" (inchdi 12.12)
+                    |]
+                PaperSize = (inch 20.0, inch 20.0)
+                Distance = yard 100.0
+                LabelClockPositions = [| 3.0 |]
+            }
+
+        let mr31 =
+            {   Organization = nra
+                Identifier = "MR-31"
+                Name = "100-yard reduction of MR-1 600y target"
+                Rings =
+                    [|  ring "X" (inchdi 0.75) |> black
+                        ring "10" (inchdi 1.75) |> black
+                        ring "9" (inchdi 2.75) |> black
+                        ring "8" (inchdi 3.75) |> black
+                        ring "7" (inchdi 5.75) |> black
+                        ring "6" (inchdi 7.75)
+                        ring "5" (inchdi 9.75)
+                    |]
+                PaperSize = (inch 20.0, inch 20.0)
+                Distance = yard 100.0
+                LabelClockPositions = [| 3.0 |]
+            }
+
+        let sr =
+            {   Organization = nra
+                Identifier = "SR"
+                Name = "Target, Rifle, Competition, Short Range"
+                Rings =
+                    [|  ring "X" (inchdi 3.0) |> black
+                        { (ring "10" (inchdi 7.0) |> black) with LabelClockPositionsOverride = Some [|12.0|] }
+                        { (ring "9" (inchdi 13.0) |> black) with LabelClockPositionsOverride = Some [|12.0|] }
+                        ring "8" (inchdi 19.0)
+                        ring "7" (inchdi 25.0)
+                        ring "6" (inchdi 31.0)
+                        ring "5" (inchdi 37.0)
+                    |]
+                PaperSize = (inch 40.0, inch 40.0)
+                Distance = yard 200.0
+                LabelClockPositions = [| 3.0; 9.0 |]
+            }
+
+        let sr42 =
+            {   Organization = nra
+                Identifier = "SR-42"
+                Name = "200-yard reduction of SR-3 300y target"
+                Rings =
+                    [|  ring "X" (inchdi 1.9) |> black
+                        ring "10" (inchdi 4.56) |> black
+                        ring "9" (inchdi 8.56) |> black
+                        ring "8" (inchdi 12.56) |> black
+                        ring "7" (inchdi 16.56)
+                        ring "6" (inchdi 20.56)
+                        ring "5" (inchdi 24.56)
+                    |]
+                PaperSize = (inch 28.0, inch 28.0)
+                Distance = yard 200.0
+                LabelClockPositions = [| 3.0; 9.0 |]
+            }
+
+        let mr52 =
+            {   Organization = nra
+                Identifier = "MR-52"
+                Name = "200-yard reduction of MR-1 600y target"
+                Rings =
+                    [|  ring "X" (inchdi 1.79) |> black
+                        ring "10" (inchdi 3.79) |> black
+                        ring "9" (inchdi 5.79) |> black
+                        ring "8" (inchdi 7.79) |> black
+                        ring "7" (inchdi 11.79) |> black
+                        ring "6" (inchdi 15.79)
+                        ring "5" (inchdi 19.79)
+                    |]
+                PaperSize = (inch 28.0, inch 28.0)
+                Distance = yard 200.0
+                LabelClockPositions = [| 3.0 |]
+            }
+
+        let sr5 =
+            { sr with
+                Identifier = "SR-5"
+                Name = "Modified SR target for small target frames"
+                Rings = sr.Rings.[0..4]
+                PaperSize = (inch 28.0, inch 28.0)
+            }
+
+        let allTargets =
+            [|  b2; b3; b4; b5; b6; b8; b16; b40
+                sr1; sr21; mr31
+                sr; sr42; mr52; sr5
+            |]
 
     module ISSF =
         let private issf = "ISSF"
