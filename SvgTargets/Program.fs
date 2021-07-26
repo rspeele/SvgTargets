@@ -1,11 +1,7 @@
 ﻿open System
 open FSharp.Data.UnitSystems.SI.UnitSymbols
 open SvgTargets
-
-let private inch (x : float) = x * (1.0<m> / 39.3701)
-let private foot (x : float) = inch (x * 12.0)
-let private yard (x : float) = foot (x * 3.0)
-let private mm (x: float) = x * (1.0<m> / 1000.0)
+open SvgTargets.Conversions
 
 [<EntryPoint>]
 let main argv =

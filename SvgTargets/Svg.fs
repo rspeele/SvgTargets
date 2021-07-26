@@ -10,6 +10,7 @@ type SvgConfiguration =
         RingThickness : float<m>
         BlackOverride : string option
         WhiteOverride : string option
+        DrawBorder : bool
     }
     static member Default =
         {   IncludeRuler = false
@@ -17,6 +18,7 @@ type SvgConfiguration =
             RingThickness = 0.0008<m>
             BlackOverride = None
             WhiteOverride = None
+            DrawBorder = true
         }
 
 let private attr (name : string) (value : string) = XAttribute(XName.Get(name), value)
@@ -158,7 +160,7 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                     , attr "y" "0"
                     , attr "width" (mm (fst target.PaperSize))
                     , attr "height" (mm (snd target.PaperSize))
-                    , attr "stroke" (color Black)
+                    , attr "stroke" (color (if config.DrawBorder then Black else White))
                     , attr "stroke-width" (mm config.RingThickness)
                     , attr "fill" (color White)
                     )

@@ -58,7 +58,7 @@ module Targets =
                         ring "5" (diameter 5.56)
                         ring "4" (diameter 7.33)
                     |]
-                PaperSize = (inch 10.5, inch 12.0)
+                PaperSize = (inch 8.5, inch 10.0)
                 Distance = foot 50.0
                 LabelClockPositions = [| 9.0 |]
             }
@@ -75,7 +75,7 @@ module Targets =
                         ring "7" (diameter 6.14)
                         ring "6" (diameter 8.32)
                     |]
-                PaperSize = (inch 10.5, inch 12.0)
+                PaperSize = (inch 8.5, inch 10.0)
                 Distance = foot 50.0
                 LabelClockPositions = [| 9.0 |]
             }

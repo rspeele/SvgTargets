@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Conversions.fs" />
     <Compile Include="TargetDefinition.fs" />
     <Compile Include="Scaling.fs" />
     <Compile Include="Svg.fs" />

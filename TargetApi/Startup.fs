@@ -27,6 +27,8 @@ type Startup(configuration: IConfiguration) =
         app.UseHttpsRedirection()
            .UseRouting()
            .UseAuthorization()
+           .UseDefaultFiles()
+           .UseStaticFiles()
            .UseEndpoints(fun endpoints ->
                 endpoints.MapControllers() |> ignore
             ) |> ignore

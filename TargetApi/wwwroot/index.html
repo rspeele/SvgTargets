@@ -1,0 +1,370 @@
+﻿<h1>SVG Targets</h1>
+
+<p>This site is a free resource for bullseye shooting targets.</p>
+
+<p>Targets are available in SVG format. These are vector graphics which can be printed at high resolution without pixelation.</p>
+
+<p>The files can also be used as a reference or incorporated into shooting-related software or graphic designs.</p>
+
+<p>
+    I referenced NRA competition rulebooks to obtain the correct target dimensions.
+
+</p>
+<p>
+    However, please bear in mind my site is not sanctioned by or affiliated with the NRA or any other shooting organization.
+    These targets are therefore not approved for use in an official match.
+</p>
+
+<h2>Targets</h2>
+
+<p>
+    The following targets are currently available:
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Discipline</th>
+            <th>Target</th>
+            <th>Distance</th>
+            <th>Description</th>
+            <th>Course of Fire</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th rowspan="2">NRA Precision Pistol (outdoor match)</th>
+            <td><a href="/NRA/B-6.svg">B-6</a></td>
+            <td>50 yards</td>
+            <td>Slow fire target</td>
+            <td>10 shots in 10 minutes</td>
+        </tr>
+        <tr>
+            <td><a href="/NRA/B-8.svg">B-8</a></td>
+            <td>25 yards</td>
+            <td>Timed and rapid fire target</td>
+            <td>
+                Timed fire: two 5-shot strings, 5 shots in 20 seconds.
+                <br />Rapid fire: two 5-shot strings, 5 shots in 10 seconds.
+            </td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <th rowspan="2">NRA Precision Pistol (indoor match at 25 yards)</th>
+            <td><a href="/NRA/B-16.svg">B-16</a></td>
+            <td>25 yards</td>
+            <td>Slow fire target</td>
+            <td>10 shots in 10 minutes</td>
+        </tr>
+        <tr>
+            <td><a href="/NRA/B-8.svg">B-8</a></td>
+            <td>25 yards</td>
+            <td>Timed and rapid fire target</td>
+            <td>
+                Timed fire: two 5-shot strings, 5 shots in 20 seconds.
+                <br />Rapid fire: two 5-shot strings, 5 shots in 10 seconds.
+            </td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <th rowspan="2">NRA Precision Pistol (indoor match at 20 yards)</th>
+            <td><a href="/NRA/B-4.svg">B-4</a></td>
+            <td>20 yards</td>
+            <td>Slow fire target</td>
+            <td>10 shots in 10 minutes</td>
+        </tr>
+        <tr>
+            <td><a href="/NRA/B-5.svg">B-5</a></td>
+            <td>20 yards</td>
+            <td>Timed and rapid fire target</td>
+            <td>
+                Timed fire: two 5-shot strings, 5 shots in 20 seconds.
+                <br />Rapid fire: two 5-shot strings, 5 shots in 10 seconds.
+            </td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <th rowspan="2">NRA Precision Pistol (indoor match at 50 feet)</th>
+            <td><a href="/NRA/B-2.svg">B-2</a></td>
+            <td>50 feet</td>
+            <td>Slow fire target</td>
+            <td>10 shots in 10 minutes</td>
+        </tr>
+        <tr>
+            <td><a href="/NRA/B-3.svg">B-3</a></td>
+            <td>50 feet</td>
+            <td>Timed and rapid fire target</td>
+            <td>
+                Timed fire: two 5-shot strings, 5 shots in 20 seconds.
+                <br />Rapid fire: two 5-shot strings, 5 shots in 10 seconds.
+            </td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <th>International 10 meter air pistol</th>
+            <td><a href="/NRA/B-40.svg">B-40</a></td>
+            <td>10 meters</td>
+            <td>Slow fire target</td>
+            <td>60 shots in 60 minutes; change target every 5 or every 10 shots</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>
+    Printing Targets
+</h2>
+
+<p>
+    If you want to print out targets, check the printing options in your browser and make sure it is set to "100%" scale.
+</p>
+
+<p>
+    By default your browser will probably try to scale the targets to fit a sheet of paper.
+</p>
+
+<p>
+    At the lower left corner of each target is a circle marked "O.D. = 10¢". A US dime should precisely cover this circle.
+</p>
+
+<p>
+    If the outer diameter of the circle is NOT the same as a dime, it probably means that your printing options are scaling the target to some size other than 100%.
+</p>
+
+<h2>Adjusting the Targets for Alternative Distances</h2>
+
+<p>
+    The target files are generated on-demand. You can change how the targets are rendered by altering parameters in the website address (URL).
+</p>
+
+<p>
+    One handy option is to adjust the target for shooting at a different distance than it was intended for. After all, most of the targets are too large to print on your home printer.
+</p>
+
+<p>
+    Perhaps you'd like to simulate shooting the B-6 50-yard slow fire bullseye target on your 10m air pistol home range.
+</p>
+
+<p>
+    To do this, add "?scaleDistance=10m" to the URL.
+</p>
+
+<p>
+    <a href="/NRA/B-6.svg?scaleDistance=10m">Example: /NRA/B-6.svg?scaleDistance=10m</a>
+</p>
+
+<p>
+    However, the default scaling assumes that the target was supposed to be shot with a .22 caliber firearm at the original 50-yard distance, and will still be shot with a .22 at the new distance.
+</p>
+
+<p>
+    Suppose you're shooting your .177 air pistol at 10m, but you want to simulate the scoring difficulty of shooting a .45 at 50 yards.
+</p>
+
+<p>
+    To specify this, use the "scaleOldCaliber" and "scaleNewCaliber" parameters. This produces a slightly easier target.
+</p>
+
+<p>
+    <a href="/NRA/B-6.svg?scaleDistance=10m&scaleOldCaliber=0.45&scaleNewCaliber=0.177">Example: /NRA/B-6.svg?scaleDistance=10m&scaleOldCaliber=0.45&scaleNewCaliber=0.177</a>
+</p>
+
+<h3>Finer points of scaling targets</h3>
+
+<p>
+    Why does the scaling depend on the caliber? Why don't the rings just get, say, half as big when we shoot at half the distance? Because the scoring rings on a target can be hit by the <em>edge</em> of a bullet, not just its <em>center</em>.
+</p>
+
+<p>
+    Imagine a .45-caliber hole in a B-6 shot at 50 yards. The center of the shot hole is 2" away from the center of the target.
+</p>
+
+<p>
+    When we score this, we look at the edge of the shot hole, not the center. Because of the .225" radius of the hole, the edge of the hole is 2 - 0.225=<strong>1.775"</strong> from the center of the target. This means it does <em>not</em> touch the 10-ring, which has a radius of 1.68". The shot scores a 9.
+</p>
+
+<p>
+    Now imagine the target was at half the distance, 25 yards. Assuming a <a href="https://en.wikipedia.org/wiki/Spherical_cow">linear cone of dispersion</a>,
+    the shooter's error would be halved, so the <em>center</em> of our shot hole would now be 1" away from the center of the target, instead of 2".
+</p>
+
+<p>
+    But the bullet is still .45 caliber, so the edge of the hole is now 1 - 0.225=<strong>0.775"</strong> from the center.
+</p>
+
+<p>
+    <strong>If we had scaled our target by naïvely halving the diameter of each ring, the 10-ring would now have a radius of 0.84" and this shot would score a 10 instead of a 9.</strong>
+</p>
+
+<p>
+    This error becomes especially dramatic if you scale the target to very close range and shoot it with a large caliber bullet.
+</p>
+
+<p>
+    Compare a <a href="/NRA/B-6.svg?scaleDistance=10y&scaleOldCaliber=0&scaleNewCaliber=0">B-6 scaled to 10 yards by simply dividing all ring diameters by 5</a>,
+    with the <a href="/NRA/B-6.svg?scaleDistance=10y&scaleOldCaliber=0.45&scaleNewCaliber=0.45">same target scaled for shooting with a .45</a>.
+</p>
+
+<p>
+    The X-ring becomes nothing more than a dot, and the 10-ring is about the same size as the X-ring was on the naïvely scaled target.
+</p>
+
+<h3>My scaling formula</h3>
+
+<p>
+    So what exactly <em>is</em> the correct scaling method? Well, that's up for some debate, but here is what my software does:
+</p>
+
+<p>
+    First, add the "scaleOldCaliber" diameter to each of the target rings. This moves the rings out to where the <em>center</em> of a shot would need to hit to score, rather than the edge. This is where you'd put the rings if you were going to shoot the target with a tiny laser beam instead of a bullet.
+</p>
+
+<p>
+    Next, multiply <em>those</em> rings by the ratio of newDistance/oldDistance.
+</p>
+
+<p>
+    Next, subtract the "scaleNewCaliber" diameter from each of the target rings, converting them back to score-on-edge-of-shot-hole rings.
+</p>
+
+<p>
+    Finally, decide which rings to color in black. This has no impact on scoring, it's just to keep the aiming reference about the same perceived size for the shooter.
+</p>
+
+<p>
+    Do this by taking the size of the original black, multiplying by ((newDistance+1m)/(oldDistance+1m)), and choosing whichever new scoring ring is nearest to that dimension. The +1m is to account for the shooter's eye being about 1m behind the firing line.
+</p>
+
+<h3>Caveats</h3>
+
+<p>
+    I believe this method results in ring sizes that are correct assuming, once again, a <a href="https://en.wikipedia.org/wiki/Frictionless_plane">linear cone of dispersion</a>. That assumption is likely not correct in the real world.
+</p>
+
+<p>
+    Anybody who has dedicated a lot of time to load development and accuracy testing will tell you that a 1" group at 25 yards ain't necessarily a 2" group at 50 yards. So as far as mechanical accuracy is concerned, shooting closer is easier.
+    For rifle shooting there is also the matter of wind and bullet drop which factor in much greater at long range.
+</p>
+
+<p>
+    On the other hand, I have heard accomplished pistol shooters talk about "parallel errors". This is where your sights are aligned, the gun barrel remains square to the target paper, but your body's sway moves the gun around by a half inch or so.
+</p>
+
+<p>
+    Invariably, the advice given is to ignore this error and the <em>perceived large movement</em> in your sight picture, and focus entirely on maintaining sight <em>alignment</em> and a clean trigger press.
+</p>
+
+<p>
+    After all, a half-inch of parallel movement is still just a half-inch at 50 yards, whereas an alignment error is magnified greatly with distance.
+</p>
+
+<p>
+    If we take this to be true, then it would be natural to conclude that pistol shooting is easier at <em>longer</em> distance because ignoring the parallel error works on the <a href="/NRA/B-6.svg">B-6</a> at 50 yards, but a half-inch could be the difference between a 10 and an 8 on the <a href="/NRA/B-40.svg">B-40</a> at 10m.
+</p>
+
+<p>
+    I have found that spending time thinking about this does <em>not</em> improve one's shooting ability. The written test and essay section has been missing from every scorecard I've ever filled out.
+</p>
+
+<h2>Other Customizations</h2>
+
+<p>
+    You may want to save some ink when printing targets. Adding "?black=gray" to the URL changes the black areas of the target to a medium gray color; which should help with that.
+</p>
+<p>
+    <a href="/NRA/B-40.svg?black=gray">Example: /NRA/B-40.svg?black=gray</a>
+</p>
+
+<p>
+    You can also disable the info text and dime size reference.
+</p>
+<p>
+    <a href="/NRA/B-40.svg?black=gray&dime=0&info=0">Example: /NRA/B-40.svg?black=gray&dime=0&info=0</a>
+</p>
+
+
+<p>
+    Just for fun, you can also use any hex color, like #ff7f00. Replace the "#" with a "%23".
+</p>
+<p>
+    <a href="/NRA/B-40.svg?black=%23ff7f00">Example: /NRA/B-40.svg?black=%23ff7f00</a>
+</p>
+
+<p>
+    Furthermore, you can change the white part of the target, too. Add "&white=[color]" to the URL.
+</p>
+<p>
+    <a href="/NRA/B-40.svg?black=%23ff7f00&white=blue">Example: /NRA/B-40.svg?black=%23ff7f00&white=blue</a>
+</p>
+
+<h2>Complete Table of Parameters</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+            <th>Examples</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>scaleDistance</td>
+            <td>Distance (suffixes m, y, f)</td>
+            <td>10m, 50f</td>
+            <td>Scale the target to shoot it at a distance other than its standard shooting distance, with approximately the same level of difficulty.</td>
+        </tr>
+        <tr>
+            <td>scaleOldCaliber</td>
+            <td>Inches</td>
+            <td>0.22, 0.45, 0.355</td>
+            <td>Use with scaleDistance. Specifies the caliber you would normally use when shooting the target at its standard distance.</td>
+        </tr>
+        <tr>
+            <td>scaleNewCaliber</td>
+            <td>Inches</td>
+            <td>0.177, 0.22, 0.45</td>
+            <td>Use with scaleDistance. Specifies the caliber you will shoot the scaled target with.</td>
+        </tr>
+        <tr>
+            <td>ringThickness</td>
+            <td>Inches</td>
+            <td>0.005, 0.040</td>
+            <td>Specifies the thickness of the scoring rings. Making the rings thicker doesn't make them easier to hit, as the rings are rendered so that their <em>outside edge</em> matches the dimension from the rulebook.</td>
+        </tr>
+        <tr>
+            <td>black</td>
+            <td>Color</td>
+            <td>blue, gray, %230f0, %23ff88dd</td>
+            <td>This color will be used for the parts of the target that would normally be colored black.</td>
+        </tr>
+        <tr>
+            <td>white</td>
+            <td>Color</td>
+            <td>blue, gray, %230f0, %23ff88dd</td>
+            <td>This color will be used for the parts of the target that would normally be colored white.</td>
+        </tr>
+        <tr>
+            <td>info</td>
+            <td>Boolean</td>
+            <td>0, 1</td>
+            <td>If 0, do not include the informational text at the bottom of the target.</td>
+        </tr>
+        <tr>
+            <td>dime</td>
+            <td>Boolean</td>
+            <td>0, 1</td>
+            <td>If 0, do not include the dime sizing reference.</td>
+        </tr>
+        <tr>
+            <td>border</td>
+            <td>Boolean</td>
+            <td>0, 1</td>
+            <td>If 1, draw a rectangular border around the whole target.</td>
+        </tr>
+    </tbody>
+</table>

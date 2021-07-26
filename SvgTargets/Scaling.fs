@@ -1,4 +1,6 @@
 ﻿module SvgTargets.Scaling
+open System
+open SvgTargets.Conversions
 open FSharp.Data.UnitSystems.SI.UnitSymbols
 
 let private addRadiusToRings (radiusIncrease : float<m>) (target : TargetDefinition) =
@@ -10,6 +12,16 @@ let private scaleRings (radiusMultiplier : float) (target : TargetDefinition) =
     { target with
         Rings = target.Rings |> Array.map (fun r -> { r with Radius = r.Radius * radiusMultiplier })
     }
+
+let private describeDistance (distance : float<m>) =
+    let units =
+        [   (distance * yardsPerMeter, "y")
+            (distance * feetPerMeter, "'")
+            (distance * 1.0<1/m>, "m")
+        ]
+    let closestToWholeNumber, units =
+        units |> List.sortBy (fun (dist, _) -> abs (dist - round dist)) |> List.head
+    sprintf "%g%s" closestToWholeNumber units
 
 let scale (originalCaliber : float<m>) (newCaliber : float<m>) (newDistance : float<m>) (target : TargetDefinition) =
     let originalLaserTarget = addRadiusToRings (originalCaliber * 0.5) target
@@ -30,6 +42,7 @@ let scale (originalCaliber : float<m>) (newCaliber : float<m>) (newDistance : fl
             |> Seq.map (fun r -> { r with Radius = max 0.0<m> r.Radius; Fill = if r.Radius <= nearestRingToRadius.Radius then Black else White })
             |> Seq.toArray
         PaperSize = oldW * visualDistanceRatio, oldH * visualDistanceRatio
+        Name = newShootableTarget.Name + " (scaled to " + describeDistance newDistance + ")"
     }
     
 
