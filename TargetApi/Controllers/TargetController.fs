@@ -1,5 +1,4 @@
 ﻿namespace TargetApi.Controllers
-
 open System
 open System.IO
 open Microsoft.AspNetCore.Mvc
@@ -27,7 +26,11 @@ type TargetController () =
         , dime : Nullable<int>
         , border : Nullable<int>
         ) =
-        let target = Targets.allTargets |> Seq.tryFind (fun t -> t.Organization = organization && t.Identifier = identifier)
+        let target =
+            Targets.allTargets
+            |> Seq.tryFind (fun t -> 
+                t.Organization.Equals(organization, StringComparison.OrdinalIgnoreCase)
+                && t.Identifier.Equals(identifier, StringComparison.OrdinalIgnoreCase))
         match target with
         | None ->
             NotFoundResult() :> IActionResult

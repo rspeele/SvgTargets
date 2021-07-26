@@ -111,13 +111,13 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
             , infoText
             )
     let labels =
-        let minGapForLabel = 0.004<m>
+        let minGapForLabel = 0.002<m>
         let _, smallestGapBetweenRings =
             bigToSmall
             |> Seq.fold (fun (previousRadius, soFar) thisRing ->
                 let gap = previousRadius - thisRing.Radius
                 let newSmallest =
-                    if gap < minGapForLabel then soFar
+                    if gap < minGapForLabel || thisRing.LabelClockPositionsOverride = Some [||] then soFar
                     else min soFar gap
                 (thisRing.Radius, newSmallest)) target.PaperSize
         [|  for i, ring in bigToSmall |> Seq.indexed do
@@ -136,14 +136,15 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                         , attr "font-family" "sans-serif"
                         , ring.Label
                         )
+                let clocks = defaultArg ring.LabelClockPositionsOverride target.LabelClockPositions
                 match smallerRingRadius with
                 | None ->
-                    if target.LabelClockPositions.Length > 0 && ring.Radius >= minGapForLabel then
+                    if clocks.Length > 0 && ring.Radius >= minGapForLabel then
                         yield textElem "x" (mm centerX) (mm centerY)
                 | Some smallerRingRadius ->
                     if ring.Radius - smallerRingRadius >= minGapForLabel then
                         let middleRadius = smallerRingRadius + 0.5 * (ring.Radius - smallerRingRadius)
-                        for clock in defaultArg ring.LabelClockPositionsOverride target.LabelClockPositions do
+                        for clock in clocks do
                             let (x, y) = offsetClock (centerX, centerY) clock middleRadius
                             yield textElem (string clock) (mm x) (mm y)
         |]
