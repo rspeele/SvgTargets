@@ -120,7 +120,7 @@ module Targets =
                 Identifier = "B-16"
                 Name = "25-yard slow fire pistol target"
                 Rings =
-                    [|  ring "X" (inchdi 0.67) |> black
+                    [|  ring "X" (inchdi 0.67) |> black |> noLabel
                         ring "10" (inchdi 1.51) |> black
                         ring "9" (inchdi 2.60) |> black
                         ring "8" (inchdi 3.82) |> black
@@ -299,10 +299,102 @@ module Targets =
                 PaperSize = (inch 28.0, inch 28.0)
             }
 
+        let sr3 =
+            {   Organization = nra
+                Identifier = "SR-3"
+                Name = "Enlarged aiming black version of SR target, for 300-yard rapid fire matches"
+                Rings =
+                    [|  ring "X" (inchdi 3.0) |> black
+                        { (ring "10" (inchdi 7.0) |> black) with LabelClockPositionsOverride = Some [|12.0|] }
+                        { (ring "9" (inchdi 13.0) |> black) with LabelClockPositionsOverride = Some [|12.0|] }
+                        { (ring "8" (inchdi 19.0) |> black) with LabelClockPositionsOverride = Some [|12.0|] }
+                        { (ring "7" (inchdi 25.0)) with LabelClockPositionsOverride = Some [|12.0|] }
+                        ring "6" (inchdi 31.0)
+                        ring "5" (inchdi 37.0)
+                    |]
+                PaperSize = (inch 40.0, inch 40.0)
+                Distance = yard 300.0
+                LabelClockPositions = [| 3.0; 9.0 |]
+            }
+
+        let mr63 =
+            {   Organization = nra
+                Identifier = "MR-63"
+                Name = "300-yard reduction of MR-1 600y target"
+                Rings =
+                    [|  ring "X" (inchdi 2.85) |> black
+                        ring "10" (inchdi 5.85) |> black
+                        ring "9" (inchdi 8.85) |> black
+                        ring "8" (inchdi 11.85) |> black
+                        ring "7" (inchdi 17.85) |> black
+                        ring "6" (inchdi 23.85)
+                        ring "5" (inchdi 29.85)
+                    |]
+                PaperSize = (inch 40.0, inch 40.0)
+                Distance = yard 300.0
+                LabelClockPositions = [| 3.0 |]
+            }
+
+        let mr65 =
+            {   Organization = nra
+                Identifier = "MR-65"
+                Name = "Rifle, Competition Mid-Range. Used in 500-yard matches only"
+                Rings =
+                    [|  ring "X" (inchdi 5.0) |> black
+                        ring "10" (inchdi 10.0) |> black
+                        ring "9" (inchdi 15.0) |> black
+                        ring "8" (inchdi 20.0) |> black
+                        ring "7" (inchdi 25.0) |> black
+                        ring "6" (inchdi 30.0) |> black
+                        ring "5" (inchdi 36.0)
+                    |]
+                PaperSize = (inch 40.0, inch 40.0)
+                Distance = yard 500.0
+                LabelClockPositions = [| 12.0 |]
+            }
+
+        let mr1 =
+            {   Organization = nra
+                Identifier = "MR-1"
+                Name = "Enlarged aiming black for use in 600-yard matches only."
+                Rings =
+                    [|  ring "X" (inchdi 6.0) |> black
+                        ring "10" (inchdi 12.0) |> black
+                        ring "9" (inchdi 18.0) |> black
+                        ring "8" (inchdi 24.0) |> black
+                        ring "7" (inchdi 36.0) |> black
+                        ring "6" (inchdi 48.0)
+                        ring "5" (inchdi 60.0)
+                    |]
+                PaperSize = (inch 64.0, inch 64.0)
+                Distance = yard 600.0
+                LabelClockPositions = [| 12.0 |]
+            }
+
+        let lr =
+            {   Organization = nra
+                Identifier = "LR"
+                Name = "Long range target."
+                Rings =
+                    [|  ring "X" (inchdi 10.0) |> black
+                        ring "10" (inchdi 20.0) |> black
+                        ring "9" (inchdi 30.0) |> black
+                        ring "8" (inchdi 44.0) |> black
+                        ring "7" (inchdi 60.0)
+                    |]
+                PaperSize = (inch 72.0, inch 72.0)
+                Distance = yard 1000.0
+                LabelClockPositions = [| 12.0 |]
+            }
+
         let allTargets =
             [|  b2; b3; b4; b5; b6; b8; b16; b40
                 sr1; sr21; mr31
                 sr; sr42; mr52; sr5
+                sr3; mr63
+                mr65
+                mr1
+                lr
             |]
 
     module ISSF =
@@ -400,6 +492,7 @@ module Targets =
             { p25 with
                 Identifier = "P50"
                 Name = "50m Precision Pistol Target"
+                Distance = 50.0<m>
             }
 
         let ap10 =
