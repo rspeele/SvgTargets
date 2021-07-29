@@ -183,6 +183,306 @@ module Targets =
                 LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
             }
 
+        let a17 =
+            {   Organization = nra
+                Identifier = "A-17_1"
+                Name = "50-foot smallbore rifle target (single-bull)"
+                Rings =
+                    [|  ring "10" (inchdi 0.150) |> black
+                        ring "9" (inchdi 0.483) |> black
+                        ring "8" (inchdi 0.817) |> black
+                        ring "7" (inchdi 1.150) |> black
+                        ring "6" (inchdi 1.483) |> black
+                        ring "5" (inchdi 1.817)
+                    |]
+                PaperSize = (inch 4.0, inch 4.0)
+                Distance = foot 50.0
+                LabelClockPositions = [| |]
+            }
+
+        let usas50 =
+            {   Organization = nra
+                Identifier = "USAS-50_1"
+                Name = "50m int'l target reduced to 50 feet (single-bull)"
+                Rings =
+                    [|  ring "10" (mmdi 0.76) |> black
+                        ring "9" (mmdi 4.12) |> black
+                        ring "8" (mmdi 9.00) |> black
+                        ring "7" (mmdi 13.87) |> black
+                        ring "6" (mmdi 18.75) |> black
+                        ring "5" (mmdi 23.63) |> black
+                        ring "4" (mmdi 28.50) |> black
+                        ring "3" (mmdi 33.38) |> black
+                    |]
+                PaperSize = (inch 4.0, inch 4.0)
+                Distance = foot 50.0
+                LabelClockPositions = [| |]
+            }
+
+        let a32 =
+            {   Organization = nra
+                Identifier = "A-32_1"
+                Name = "50-foot NRA Light Rifle target (single-bull)"
+                Rings =
+                    [|  ring "X" (inchdi 0.218)
+                        ring "10" (inchdi 0.439) |> black
+                        ring "9" (inchdi 1.187) |> black
+                        ring "8" (inchdi 1.874) |> black
+                        ring "7" (inchdi 2.656)
+                        ring "6" (inchdi 3.374)
+                    |]
+                PaperSize = (inch 4.0, inch 5.0)
+                Distance = foot 50.0
+                LabelClockPositions = [| |]
+            }
+
+        let a7 =
+            {   Organization = nra
+                Identifier = "A-7_1"
+                Name = "75-foot smallbore rifle target (single-bull)"
+                Rings =
+                    [|  ring "10" (inchdi 0.335) |> black
+                        ring "9" (inchdi 0.835) |> black
+                        ring "8" (inchdi 1.335) |> black
+                        ring "7" (inchdi 1.835) |> black
+                        ring "6" (inchdi 2.335) |> black
+                        ring "5" (inchdi 2.835)
+                    |]
+                PaperSize = (inch 4.0, inch 5.0)
+                Distance = foot 75.0
+                LabelClockPositions = [| |]
+            }
+
+        let a23 =
+            {   Organization = nra
+                Identifier = "A-23_1"
+                Name = "50-yard smallbore rifle target (single-bull)"
+                Rings =
+                    [|  ring "X" (inchdi 0.39) |> black |> noLabel
+                        ring "10" (inchdi 0.89) |> black |> noLabel
+                        ring "9" (inchdi 1.89) |> black
+                        ring "8" (inchdi 2.89) |> black
+                        ring "7" (inchdi 3.89) |> black
+                        ring "6" (inchdi 4.89)
+                        ring "5" (inchdi 5.89)
+                    |]
+                PaperSize = (inch 6.0, inch 7.0)
+                Distance = yard 50.0
+                LabelClockPositions = [| 9.0 |]
+            }
+
+        let a27 =
+            {   Organization = nra
+                Identifier = "A-27_1"
+                Name = "50-yard smallbore prone target (single-bull)"
+                Rings =
+                    [|  ring "X" (inchdi 0.359) |> black |> noLabel
+                        ring "10" (inchdi 0.719) |> black |> noLabel
+                        ring "9" (inchdi 1.439) |> black
+                        ring "8" (inchdi 2.159) |> black
+                        ring "7" (inchdi 2.879) |> black
+                        ring "6" (inchdi 3.599) |> black
+                        ring "black" (inchdi 3.89) |> black |> noLabel
+                        ring "5" (inchdi 4.319)
+                        ring "4" (inchdi 5.038)
+                    |]
+                PaperSize = (inch 6.0, inch 7.0)
+                Distance = yard 50.0
+                LabelClockPositions = [| 9.0 |]
+            }
+
+        let a51 =
+            {   Organization = nra
+                Identifier = "A-51_1"
+                Name = "50-yard reduction of international 50m rifle target (single-bull)"
+                Rings =
+                    [|  ring "X" (mmdi 4.096) |> black |> noLabel
+                        ring "10" (mmdi 9.034) |> black |> noLabel
+                        ring "9" (mmdi 23.664) |> black |> noLabel
+                        ring "8" (mmdi 38.295) |> black
+                        ring "7" (mmdi 52.925) |> black
+                        ring "6" (mmdi 67.556) |> black
+                        ring "5" (mmdi 82.186) |> black
+                        ring "4" (mmdi 96.816) |> black
+                        ring "black" (mmdi 102.78) |> black |> noLabel
+                        ring "3" (mmdi 111.447)
+                        ring "2" (mmdi 126.077)
+                        ring "1" (mmdi 140.708)
+                    |]
+                PaperSize = (mm 180.0, mm 180.0)
+                Distance = yard 50.0
+                LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+            }
+
+        let a26 =
+            {   Organization = nra
+                Identifier = "A-26_1"
+                Name = "50-meter smallbore prone target (single-bull)"
+                Rings =
+                    [|  ring "X" (inchdi 0.393) |> black
+                        ring "10" (inchdi 0.787) |> black
+                        ring "9" (inchdi 1.574) |> black
+                        ring "8" (inchdi 2.361) |> black
+                        ring "7" (inchdi 3.148) |> black
+                        ring "6" (inchdi 3.936) |> black
+                        ring "black" (inchdi 4.270) |> black |> noLabel
+                        ring "5" (inchdi 4.723)
+                        ring "4" (inchdi 5.510)
+                    |]
+                PaperSize = (inch 6.0, inch 7.0)
+                Distance = 50.0<m>
+                LabelClockPositions = [| 9.0 |]
+            }
+
+        let a50 =
+            {   Organization = nra
+                Identifier = "A-50_1"
+                Name = "50m Rifle Target"
+                Rings =
+                    [|  ring "X" (mmdi 5.0) |> black |> noLabel
+                        ring "10" (mmdi 10.4) |> black |> noLabel
+                        ring "9" (mmdi 26.4) |> black |> noLabel
+                        ring "8" (mmdi 42.4) |> black
+                        ring "7" (mmdi 58.4) |> black
+                        ring "6" (mmdi 74.4) |> black
+                        ring "5" (mmdi 90.4) |> black
+                        ring "4" (mmdi 106.4) |> black
+                        ring "black" (mmdi 112.4) |> black |> noLabel
+                        ring "3" (mmdi 122.4)
+                        ring "2" (mmdi 138.4)
+                        ring "1" (mmdi 154.4)
+                    |]
+                PaperSize = (mm 180.0, mm 180.0)
+                Distance = 50.0<m>
+                LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+            }
+
+        let a25 =
+            {   Organization = nra
+                Identifier = "A-25_1"
+                Name = "100-yard smallbore prone target (single-bull)"
+                Rings =
+                    [|  ring "X" (inchdi 1.0) |> black
+                        ring "10" (inchdi 2.0) |> black
+                        ring "9" (inchdi 4.0) |> black
+                        ring "8" (inchdi 6.0) |> black
+                        ring "7" (inchdi 8.0) |> black
+                        ring "6" (inchdi 10.0)
+                        ring "5" (inchdi 12.0)
+                    |]
+                PaperSize = (inch 14.0, inch 14.0)
+                Distance = yard 100.0
+                LabelClockPositions = [| 9.0 |]
+            }
+
+        let a33 =
+            {   Organization = nra
+                Identifier = "A-33_1"
+                Name = "100-yard reduction of international 300m target for Metric Prone competition (single-bull)"
+                Rings =
+                    [|  ring "10" (inchdi 1.045) |> black
+                        ring "9" (inchdi 2.245) |> black
+                        ring "8" (inchdi 3.445) |> black
+                        ring "7" (inchdi 4.645) |> black
+                        ring "6" (inchdi 5.845) |> black
+                        ring "5" (inchdi 7.045) |> black
+                        ring "4" (inchdi 8.245) |> black
+                        ring "3" (inchdi 9.445)
+                        ring "2" (inchdi 10.645)
+                        ring "1" (inchdi 11.845)
+                    |]
+                PaperSize = (inch 14.0, inch 14.0)
+                Distance = yard 100.0
+                LabelClockPositions = [| 9.0 |]
+            }
+
+        let a21 =
+            {   Organization = nra
+                Identifier = "A-21"
+                Name = "200-yard smallbore target"
+                Rings =
+                    [|  ring "X" (inchdi 2.0) |> black
+                        ring "10" (inchdi 4.0) |> black
+                        ring "9" (inchdi 8.0) |> black
+                        ring "8" (inchdi 12.0) |> black
+                        ring "7" (inchdi 16.0)
+                        ring "6" (inchdi 20.0)
+                    |]
+                PaperSize = (inch 22.0, inch 24.0)
+                Distance = yard 200.0
+                LabelClockPositions = [| 9.0; 3.0 |]
+            }
+
+        let a31 =
+            {   Organization = nra
+                Identifier = "A-31_1"
+                Name = "50-yard NRA Light Rifle target (single-bull)"
+                Rings =
+                    [|  ring "10" (inchdi 1.025) |> black
+                        ring "9" (inchdi 2.21) |> black
+                        ring "8" (inchdi 3.42) |> black
+                        ring "7" (inchdi 4.165) |> black
+                        ring "6" (inchdi 5.812)
+                    |]
+                PaperSize = (inch 6.0, inch 8.0)
+                Distance = yard 50.0
+                LabelClockPositions = [| 9.0 |]
+            }
+
+        let a37 =
+            {   Organization = nra
+                Identifier = "A-37_1"
+                Name = "100-yard mini-Palma smallbore prone reduction of 800y LR target"
+                Rings =
+                    [|  ring "X" (inchdi 1.0) |> black
+                        ring "10" (inchdi 2.0) |> black
+                        ring "9" (inchdi 2.9) |> black
+                        ring "8" (inchdi 3.9) |> black
+                        ring "7" (inchdi 4.9) |> black
+                        ring "6" (inchdi 5.8) |> black
+                        ring "5" (inchdi 6.8)
+                    |]
+                PaperSize = (inch 8.0, inch 8.0)
+                Distance = yard 100.0
+                LabelClockPositions = [| 3.0; 9.0 |]
+            }
+
+        let a38 =
+            {   Organization = nra
+                Identifier = "A-38_1"
+                Name = "100-yard mini-Palma smallbore prone reduction of 900y LR target"
+                Rings =
+                    [|  ring "X" (inchdi 0.9) |> black
+                        ring "10" (inchdi 1.8) |> black
+                        ring "9" (inchdi 2.6) |> black
+                        ring "8" (inchdi 3.4) |> black
+                        ring "7" (inchdi 4.3) |> black
+                        ring "6" (inchdi 5.1) |> black
+                        ring "5" (inchdi 6.0)
+                    |]
+                PaperSize = (inch 8.0, inch 8.0)
+                Distance = yard 100.0
+                LabelClockPositions = [| 3.0; 9.0 |]
+            }
+
+        let a39 =
+            {   Organization = nra
+                Identifier = "A-39_1"
+                Name = "100-yard mini-Palma smallbore prone reduction of 1000y LR target"
+                Rings =
+                    [|  ring "X" (inchdi 0.8) |> black
+                        ring "10" (inchdi 1.6) |> black
+                        ring "9" (inchdi 2.3) |> black
+                        ring "8" (inchdi 3.1) |> black
+                        ring "7" (inchdi 3.8) |> black
+                        ring "6" (inchdi 4.6) |> black
+                        ring "5" (inchdi 5.4)
+                    |]
+                PaperSize = (inch 8.0, inch 8.0)
+                Distance = yard 100.0
+                LabelClockPositions = [| 3.0; 9.0 |]
+            }
+
         let sr1 =
             {   Organization = nra
                 Identifier = "SR-1"
@@ -389,6 +689,11 @@ module Targets =
 
         let allTargets =
             [|  b2; b3; b4; b5; b6; b8; b16; b40
+
+                a17; usas50; a32; a7; a23; a27
+                a51; a26; a50; a25; a33; a21; a31
+                a37; a38; a39
+
                 sr1; sr21; mr31
                 sr; sr42; mr52; sr5
                 sr3; mr63

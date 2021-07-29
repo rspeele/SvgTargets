@@ -25,6 +25,8 @@ type TargetController () =
         , info : Nullable<int>
         , dime : Nullable<int>
         , border : Nullable<int>
+        , paperWidth : Nullable<float>
+        , paperHeight : Nullable<float>
         ) =
         let target =
             Targets.allTargets
@@ -45,6 +47,12 @@ type TargetController () =
                 let scaleOldCaliber = if scaleOldCaliber.HasValue then inch scaleOldCaliber.Value else inch 0.22
                 let scaleNewCaliber = if scaleNewCaliber.HasValue then inch scaleNewCaliber.Value else inch 0.22
                 Scaling.scale scaleOldCaliber scaleNewCaliber scaleDistance target
+
+            let target =
+                let w, h = target.PaperSize
+                { target with
+                   PaperSize = (if paperWidth.HasValue then inch paperWidth.Value else w), (if paperHeight.HasValue then inch paperHeight.Value else h)
+                }
 
             let config =
                 {   IncludeRuler = dime <> Nullable(0)
