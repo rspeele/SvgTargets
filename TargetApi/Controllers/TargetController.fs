@@ -22,11 +22,13 @@ type TargetController () =
         , ringThickness : Nullable<float>
         , black : string
         , white : string
+        , gridColor : string
         , info : Nullable<int>
         , dime : Nullable<int>
         , border : Nullable<int>
         , paperWidth : Nullable<float>
         , paperHeight : Nullable<float>
+        , grid : Nullable<float>
         ) =
         let target =
             Targets.allTargets
@@ -57,6 +59,7 @@ type TargetController () =
             let config =
                 {   IncludeRuler = dime <> Nullable(0)
                     IncludeInfo = info <> Nullable(0)
+                    IncludeGrid = if grid.HasValue then Some { Spacing = inch grid.Value; Color = if isNull gridColor then None else Some gridColor } else None
                     RingThickness = if ringThickness.HasValue then ringThickness.Value / inchesPerMeter else (min 25.0<m> target.Distance) * 0.00002
                     BlackOverride = if isNull black then None else Some black
                     WhiteOverride = if isNull white then None else Some white

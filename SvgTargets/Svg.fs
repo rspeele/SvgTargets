@@ -4,9 +4,15 @@ open System.Xml
 open System.Xml.Linq
 open System
 
+type GridConfiguration =
+    {   Spacing : float<m>
+        Color : string option
+    }
+
 type SvgConfiguration =
     {   IncludeRuler : bool
         IncludeInfo : bool
+        IncludeGrid : GridConfiguration option
         RingThickness : float<m>
         BlackOverride : string option
         WhiteOverride : string option
@@ -15,6 +21,7 @@ type SvgConfiguration =
     static member Default =
         {   IncludeRuler = false
             IncludeInfo = true
+            IncludeGrid = None
             RingThickness = 0.0008<m>
             BlackOverride = None
             WhiteOverride = None
@@ -69,6 +76,28 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                     , attr "fill" (if circleRadius <= dotSizeRing then color strokeColor else (color ring.Fill))
                     )
         |]
+    let grid =
+        match config.IncludeGrid with
+        | None -> null
+        | Some grid ->
+        let width, height = target.PaperSize
+        let spacing = grid.Spacing
+        let line x1 x2 y1 y2 =
+            XElement(xn "line", attr "x1" (mm x1), attr "x2" (mm x2), attr "y1" (mm y1), attr "y2" (mm y2)
+                , attr "stroke" (defaultArg grid.Color "red")
+                , attr "stroke-width" (mm config.RingThickness)
+                )
+        let hlines =
+            let hline y = line 0.0<m> width y y
+            [|  for y in centerY .. spacing .. height do yield hline y
+                for y in seq { centerY .. -spacing .. 0.0<m> } |> Seq.skip 1 do yield hline y
+            |]
+        let vlines =
+            let vline x = line x x 0.0<m> height
+            [|  for x in centerX .. spacing .. width do yield vline x
+                for x in seq { centerX .. -spacing .. 0.0<m> } |> Seq.skip 1 do yield vline x
+            |]
+        XElement(xn "g", hlines, vlines)
     let ruler =
         let dimeDiameter = 0.01791<m>
         let stroke = 0.0005<m>
@@ -170,5 +199,6 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
             , XElement(xn "g", [| yield attr "id" "ring-labels" :> obj; for label in labels do yield upcast label |])
             , if config.IncludeInfo then info else null
             , if config.IncludeRuler then ruler else null
+            , grid
             )
     XDocument(svgElement)
