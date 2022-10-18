@@ -218,7 +218,7 @@
             <tr>
                 <td><a href="/NRA/A-51_1.svg">A-51/1</a></td>
                 <td>50 yards</td>
-                <td>50-foot reduction of internationl 50m smallbore rifle target</td>
+                <td>50-foot reduction of international 50m smallbore rifle target</td>
             </tr>
             <tr>
                 <td><a href="/NRA/A-26_1.svg">A-26/1</a></td>
@@ -522,6 +522,43 @@
         <a href="/NRA/B-40.svg?black=%23ff7f00&white=blue">Example: /NRA/B-40.svg?black=%23ff7f00&white=blue</a>
     </p>
 
+    <p>
+        For making sight adjustments it may be helpful to see a grid overlaid on the target.
+        You may know that your sight adjusts a half-inch per click at 50 yards, but do you know at a glance how many inches high and right a hit at 2 o'clock in the 9 ring is?
+    </p>
+    <p>
+        You can overlay a 2 inch grid by adding the parameter "gridX=2".
+    </p>
+    <p>
+        <a href="/NRA/B-6.svg?gridX=2">Example: /NRA/B-6.svg?gridX=2</a>
+    </p>
+    <p>
+        If you specify "gridY" you can have different spacing on the Y axis (i.e. between horizontal lines).
+    </p>
+    <p>
+        I measured the click values (average of 10) of the Bo-Mar adjustable sight on my 5" 1911 and found that the elevation clicks moved the rear sight blade by .002",
+        while the windage clicks moved the blade .0016" each.
+    </p>
+    <p>
+        Over the 6.75" sight radius of that gun, that works out to 0.43" per windage click at 50 yards,
+        and 0.53" per elevation click. If I wanted to generate a click chart for that specific gun I could do so like this:
+    </p>
+    <p>
+        <a href="/NRA/B-6.svg?gridX=0.43&gridY=0.53">Example: /NRA/B-6.svg?gridX=0.43&gridY=0.53</a>
+    </p>
+    <p>
+        Of course, that chart is kind of busy and hard to read, plus I don't have a color printer. So for practical purposes I would draw the grid lines at 4-click intervals in black on a gray target.
+    </p>
+    <p>
+        <a href="/NRA/B-6.svg?gridX=1.72&gridY=2.12&gridColor=black&black=lightgray">Example: /NRA/B-6.svg?gridX=1.72&gridY=2.12&gridColor=black&black=lightgray</a>
+    </p>
+    <p>
+        I'd also like to cut the size down to just the middle and get rid of the dime size reference.
+    </p>
+    <p>
+        <a href="/NRA/B-6.svg?gridX=1.72&gridY=2.12&gridColor=black&black=lightgray&paperWidth=8&paperHeight=10&dime=0">Example: /NRA/B-6.svg?gridX=1.72&gridY=2.12&gridColor=black&black=lightgray&paperWidth=8&paperHeight=10&dime=0</a>
+    </p>
+
     <h2>Complete Table of Parameters</h2>
 
     <table>
@@ -592,13 +629,31 @@
                 <td>paperWidth</td>
                 <td>Inches</td>
                 <td>8.5</td>
-                <td>Override the size of the paper.</td>
+                <td>Override the size of the paper. This does not scale the target, just crops it. Useful for making repair centers.</td>
             </tr>
             <tr>
                 <td>paperHeight</td>
                 <td>Inches</td>
                 <td>11</td>
-                <td>Override the size of the paper.</td>
+                <td>Override the size of the paper. This does not scale the target, just crops it. Useful for making repair centers.</td>
+            </tr>
+            <tr>
+                <td>gridX</td>
+                <td>Inches</td>
+                <td>1, 1.5, 0.43</td>
+                <td>If specified, draw a grid over the target and space the vertical lines this far apart along the X axis.</td>
+            </tr>
+            <tr>
+                <td>gridY</td>
+                <td>Inches</td>
+                <td>1, 1.5, 0.43</td>
+                <td>If specified, draw a grid over the target and space the horizontal lines this far apart along the Y axis.</td>
+            </tr>
+            <tr>
+                <td>gridColor</td>
+                <td>Color</td>
+                <td>blue, gray, black, %230f0, %23ff88dd</td>
+                <td>Overrides the color of the grid. Default is red. Does nothing if gridX or gridY are not set.</td>
             </tr>
         </tbody>
     </table>

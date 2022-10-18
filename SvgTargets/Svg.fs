@@ -5,7 +5,8 @@ open System.Xml.Linq
 open System
 
 type GridConfiguration =
-    {   Spacing : float<m>
+    {   SpacingX : float<m>
+        SpacingY : float<m>
         Color : string option
     }
 
@@ -81,7 +82,6 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
         | None -> null
         | Some grid ->
         let width, height = target.PaperSize
-        let spacing = grid.Spacing
         let line x1 x2 y1 y2 =
             XElement(xn "line", attr "x1" (mm x1), attr "x2" (mm x2), attr "y1" (mm y1), attr "y2" (mm y2)
                 , attr "stroke" (defaultArg grid.Color "red")
@@ -89,13 +89,13 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                 )
         let hlines =
             let hline y = line 0.0<m> width y y
-            [|  for y in centerY .. spacing .. height do yield hline y
-                for y in seq { centerY .. -spacing .. 0.0<m> } |> Seq.skip 1 do yield hline y
+            [|  for y in centerY .. grid.SpacingY .. height do yield hline y
+                for y in seq { centerY .. -grid.SpacingY .. 0.0<m> } |> Seq.skip 1 do yield hline y
             |]
         let vlines =
             let vline x = line x x 0.0<m> height
-            [|  for x in centerX .. spacing .. width do yield vline x
-                for x in seq { centerX .. -spacing .. 0.0<m> } |> Seq.skip 1 do yield vline x
+            [|  for x in centerX .. grid.SpacingX .. width do yield vline x
+                for x in seq { centerX .. -grid.SpacingX .. 0.0<m> } |> Seq.skip 1 do yield vline x
             |]
         XElement(xn "g", hlines, vlines)
     let ruler =
