@@ -79,21 +79,28 @@ type TargetController () =
             rendered.Save(mem)
             this.File(mem.ToArray(), "image/svg+xml") :> IActionResult
 
-    // Lightweight catalog of every available target, consumed by the interactive
-    // builder page (builder.html) so its target list stays in sync with the code.
+    // Two-level catalog (organization + discipline, then targets) consumed by the
+    // interactive builder page (builder.html) so its dropdowns stay in sync with
+    // the code.
     [<HttpGet>]
     [<Route("/targets.json")>]
     member this.List() : IActionResult =
-        let items =
-            Targets.allTargets
-            |> Array.map (fun t ->
-                let w, h = t.PaperSize
-                {|  organization = t.Organization
-                    identifier = t.Identifier
-                    name = t.Name
-                    distanceYards = t.Distance * yardsPerMeter
-                    paperWidthInches = w * inchesPerMeter
-                    paperHeightInches = h * inchesPerMeter
+        let categories =
+            Targets.categories
+            |> Array.map (fun (org, (discipline : Discipline), targets) ->
+                {|  category = org + " " + discipline.Name
+                    organization = org
+                    discipline = discipline.Name
+                    targets =
+                        targets
+                        |> Array.map (fun t ->
+                            let w, h = t.PaperSize
+                            {|  identifier = t.Identifier
+                                name = t.Name
+                                distanceYards = t.Distance * yardsPerMeter
+                                paperWidthInches = w * inchesPerMeter
+                                paperHeightInches = h * inchesPerMeter
+                            |})
                 |})
-        this.Ok(items) :> IActionResult
+        this.Ok(categories) :> IActionResult
 

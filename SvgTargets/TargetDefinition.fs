@@ -17,6 +17,14 @@ type RingDefinition =
         LabelClockPositionsOverride : float array option
     }
 
+type Discipline =
+    | Pistol
+    | Rifle
+    member this.Name =
+        match this with
+        | Pistol -> "Pistol"
+        | Rifle -> "Rifle"
+
 type TargetDefinition =
     {   Organization : string // e.g. "NRA"
         Identifier : string // e.g. "B-6"
@@ -687,10 +695,12 @@ module Targets =
                 LabelClockPositions = [| 12.0 |]
             }
 
-        let allTargets =
+        let pistolTargets =
             [|  b2; b3; b4; b5; b6; b8; b16; b40
+            |]
 
-                a17; usas50; a32; a7; a23; a27
+        let rifleTargets =
+            [|  a17; usas50; a32; a7; a23; a27
                 a51; a26; a50; a25; a33; a21; a31
                 a37; a38; a39
 
@@ -701,6 +711,8 @@ module Targets =
                 mr1
                 lr
             |]
+
+        let allTargets = Array.append pistolTargets rifleTargets
 
     module ISSF =
         let private issf = "ISSF"
@@ -807,13 +819,28 @@ module Targets =
                 Name = "10m Air Pistol Target"
             }
 
-        let allTargets =
+        let rifleTargets =
             [|  r300
                 r50
                 ar10
-                p25
+            |]
+
+        let pistolTargets =
+            [|  p25
                 p50
                 ap10
             |]
 
+        let allTargets = Array.append rifleTargets pistolTargets
+
     let allTargets = Array.concat [| NRA.allTargets; ISSF.allTargets |]
+
+    // Two-level grouping (organization + discipline) that drives the builder UI's
+    // category dropdown. This is the single source of truth for which targets are
+    // pistol vs. rifle — membership lives here, not duplicated on each target.
+    let categories =
+        [|  "NRA",  Pistol, NRA.pistolTargets
+            "NRA",  Rifle,  NRA.rifleTargets
+            "ISSF", Pistol, ISSF.pistolTargets
+            "ISSF", Rifle,  ISSF.rifleTargets
+        |]

@@ -151,7 +151,11 @@
             <fieldset>
                 <legend>Target</legend>
                 <div class="field">
-                    <label for="target">Choose a target</label>
+                    <label for="category">Category</label>
+                    <select id="category"></select>
+                </div>
+                <div class="field">
+                    <label for="target">Target</label>
                     <select id="target"></select>
                 </div>
             </fieldset>
@@ -267,9 +271,10 @@
     <script>
         "use strict";
         const $ = (id) => document.getElementById(id);
+        const categorySelect = $("category");
         const targetSelect = $("target");
-        let targets = [];
-        let byKey = {};
+        let catData = [];   // [{ category, organization, discipline, targets: [...] }]
+        let byKey = {};     // "ORG/ID" -> target (with organization + catIndex attached)
 
         function selectedTarget() {
             return byKey[targetSelect.value];
@@ -351,7 +356,8 @@
 
         // Any control change refreshes the preview.
         document.querySelector("form.controls").addEventListener("input", (e) => {
-            if (e.target === targetSelect) onTargetChanged();
+            if (e.target === categorySelect) onCategoryChanged();
+            else if (e.target === targetSelect) onTargetChanged();
             else refresh();
         });
 
@@ -375,7 +381,29 @@
             onTargetChanged();
         });
 
-        function preselect() {
+        // Fill the target dropdown from the chosen category. Identifiers are padded
+        // with non-breaking spaces (regular runs of spaces collapse in <option>) so,
+        // with the monospace font, every target name starts at the same column.
+        function populateTargets(catIndex) {
+            const c = catData[catIndex];
+            targetSelect.innerHTML = "";
+            const NBSP = " ";
+            const idWidth = Math.max(...c.targets.map((t) => t.identifier.length)) + 2;
+            for (const t of c.targets) {
+                const opt = document.createElement("option");
+                opt.value = c.organization + "/" + t.identifier;
+                opt.textContent =
+                    t.identifier + NBSP.repeat(idWidth - t.identifier.length) + t.name;
+                targetSelect.appendChild(opt);
+            }
+        }
+
+        function onCategoryChanged() {
+            populateTargets(parseInt(categorySelect.value, 10));
+            onTargetChanged();
+        }
+
+        function preselectKey() {
             // Support ?target=NRA/B-6  or  ?org=NRA&id=B-6
             const params = new URLSearchParams(location.search);
             let org = params.get("org"), id = params.get("id");
@@ -383,41 +411,29 @@
             if (combined && combined.includes("/")) {
                 [org, id] = combined.split("/");
             }
-            if (org && id) {
-                const key = org + "/" + id;
-                if (byKey[key]) { targetSelect.value = key; return; }
-            }
-            if (byKey["NRA/B-6"]) targetSelect.value = "NRA/B-6";
+            if (org && id && byKey[org + "/" + id]) return org + "/" + id;
+            return null;
         }
 
         fetch("/targets.json")
             .then((r) => r.json())
             .then((data) => {
-                targets = data;
-                const groups = {};
-                for (const t of targets) {
-                    const key = t.organization + "/" + t.identifier;
-                    byKey[key] = t;
-                    (groups[t.organization] = groups[t.organization] || []).push(t);
-                }
-                // Pad each identifier with non-breaking spaces (collapsible regular
-                // spaces won't work in <option>) so every name starts at the same
-                // column. Width is the longest identifier across all groups + a gap.
-                const NBSP = " ";
-                const idWidth = Math.max(...targets.map((t) => t.identifier.length)) + 2;
-                for (const org of Object.keys(groups)) {
-                    const og = document.createElement("optgroup");
-                    og.label = org;
-                    for (const t of groups[org]) {
-                        const opt = document.createElement("option");
-                        opt.value = org + "/" + t.identifier;
-                        opt.textContent =
-                            t.identifier + NBSP.repeat(idWidth - t.identifier.length) + t.name;
-                        og.appendChild(opt);
+                catData = data;
+                data.forEach((c, i) => {
+                    const opt = document.createElement("option");
+                    opt.value = String(i);
+                    opt.textContent = c.category;
+                    categorySelect.appendChild(opt);
+                    for (const t of c.targets) {
+                        byKey[c.organization + "/" + t.identifier] =
+                            Object.assign({}, t, { organization: c.organization, catIndex: i });
                     }
-                    targetSelect.appendChild(og);
-                }
-                preselect();
+                });
+                const startKey = preselectKey() || (byKey["NRA/B-6"] ? "NRA/B-6" : null);
+                const start = startKey ? byKey[startKey] : Object.values(byKey)[0];
+                categorySelect.value = String(start.catIndex);
+                populateTargets(start.catIndex);
+                targetSelect.value = start.organization + "/" + start.identifier;
                 onTargetChanged();
             })
             .catch(() => {
