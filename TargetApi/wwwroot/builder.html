@@ -439,6 +439,81 @@
             }
         }
 
+        // ---- Combined-SVG export (so Download / Open in new tab include the overlay) ----
+        let lastBlobUrl = null;
+        let exportUrl = "";          // what Download/Open currently point at
+        let exportName = "target.svg";
+
+        function applyExport() {
+            $("downloadLink").href = exportUrl;
+            $("downloadLink").setAttribute("download", exportName);
+        }
+
+        function viewBoxWH(svgEl) {
+            const vb = (svgEl.getAttribute("viewBox") || "").split(/\s+/).map(Number);
+            if (vb.length === 4 && vb[2] > 0 && vb[3] > 0) return [vb[2], vb[3]];
+            return [svgEl.width.baseVal.value || 1, svgEl.height.baseVal.value || 1];
+        }
+
+        // Fetch both target SVGs and nest them into one SVG, centered on a common
+        // point at true (1:1 mm) scale, the second at 50% opacity — the same overlay
+        // shown on screen, but as a single downloadable file. Returns SVG markup.
+        async function buildCombinedSvg(urlA, urlB) {
+            const [ta, tb] = await Promise.all([
+                fetch(urlA).then((r) => r.text()),
+                fetch(urlB).then((r) => r.text())
+            ]);
+            const parse = (t) => new DOMParser().parseFromString(t, "image/svg+xml").documentElement;
+            const sa = parse(ta), sb = parse(tb);
+            const [wa, ha] = viewBoxWH(sa);
+            const [wb, hb] = viewBoxWH(sb);
+            const OW = Math.max(wa, wb), OH = Math.max(ha, hb);
+            // Nest each source <svg> as a sub-viewport centered in the OW x OH canvas.
+            const place = (s, w, h) => {
+                s.setAttribute("x", (OW - w) / 2);
+                s.setAttribute("y", (OH - h) / 2);
+                s.setAttribute("width", w);
+                s.setAttribute("height", h);
+            };
+            place(sa, wa, ha);
+            place(sb, wb, hb);
+            const NS = "http://www.w3.org/2000/svg";
+            const out = document.createElementNS(NS, "svg");
+            out.setAttribute("xmlns", NS);
+            out.setAttribute("viewBox", "0 0 " + OW + " " + OH);
+            out.setAttribute("width", OW + "mm");
+            out.setAttribute("height", OH + "mm");
+            out.appendChild(document.importNode(sa, true));
+            const g = document.createElementNS(NS, "g");
+            g.setAttribute("opacity", "0.5");
+            g.appendChild(document.importNode(sb, true));
+            out.appendChild(g);
+            return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(out);
+        }
+
+        // Point Download/Open at the combined overlay (compare mode) or, otherwise,
+        // the plain primary SVG. The combined file is a freshly built blob URL.
+        function updateExports(urlA, urlB, compare) {
+            if (!(compare && urlB)) {
+                if (lastBlobUrl) { URL.revokeObjectURL(lastBlobUrl); lastBlobUrl = null; }
+                exportUrl = urlA;
+                exportName = targetFor("").identifier + ".svg";
+                applyExport();
+                return;
+            }
+            buildCombinedSvg(urlA, urlB).then((svg) => {
+                if (lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
+                lastBlobUrl = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+                exportUrl = lastBlobUrl;
+                exportName = targetFor("").identifier + "-vs-" + targetFor("2").identifier + ".svg";
+                applyExport();
+            }).catch(() => {
+                exportUrl = urlA;
+                exportName = targetFor("").identifier + ".svg";
+                applyExport();
+            });
+        }
+
         let debounce;
         function refresh() {
             const urlA = buildUrlFor("");
@@ -447,9 +522,6 @@
             const urlB = compare ? buildUrlFor("2") : "";
 
             $("urlBox").textContent = location.origin + urlA + (urlB ? "\n" + location.origin + urlB : "");
-            // Open/Download act on the primary target; the overlay is preview-only.
-            $("downloadLink").href = urlA;
-            $("downloadLink").setAttribute("download", targetFor("").identifier + ".svg");
 
             setCaliberEnabled("");
             if (compare) setCaliberEnabled("2");
@@ -465,6 +537,8 @@
                     imgB.removeAttribute("src");
                     layoutPreview();
                 }
+                // Keep Download/Open in sync with the preview (combined when comparing).
+                updateExports(urlA, urlB, compare);
             }, 200);
         }
 
@@ -536,7 +610,7 @@
         window.addEventListener("resize", layoutPreview);
 
         $("openBtn").addEventListener("click", () => {
-            const url = buildUrlFor("");
+            const url = exportUrl || buildUrlFor("");
             if (url) window.open(url, "_blank");
         });
 
