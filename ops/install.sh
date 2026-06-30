@@ -11,11 +11,18 @@
 #     APP_DIR         - where the published binaries live            (default: /opt/svgtargets)
 #     SERVICE_USER    - unprivileged account that runs Kestrel       (default: svgtargets)
 #     BRANCH          - git branch to deploy from                    (default: master)
-#     KESTREL_PORT    - localhost port Kestrel binds                 (default: 5050)
+#     KESTREL_PORT    - localhost port Kestrel binds                 (default: 5051)
 #
 # The app is stateless (it renders SVGs on the fly from query params), so there
 # is no database, data directory, or connection string to manage. Re-running
 # this script is safe: it fast-forwards the repo, republishes, and restarts.
+#
+# IMPORTANT: when co-hosting several of these sites on one box, each MUST use a
+# distinct KESTREL_PORT. nginx routes by domain, but every site's Kestrel binds
+# its own localhost port; if two sites share a port, only one can bind it and
+# both domains end up proxying to whichever app won the port. The default here
+# (5051) differs from the rzsql.com script's 5050 for exactly this reason, and
+# the pre-flight check below refuses to proceed on a port another service holds.
 
 set -euo pipefail
 
@@ -25,7 +32,7 @@ SRC_DIR="${SRC_DIR:-$HOME/svgtargets-src}"
 APP_DIR="${APP_DIR:-/opt/svgtargets}"
 SERVICE_USER="${SERVICE_USER:-svgtargets}"
 BRANCH="${BRANCH:-master}"
-KESTREL_PORT="${KESTREL_PORT:-5050}"
+KESTREL_PORT="${KESTREL_PORT:-5051}"
 
 REPO_URL="https://github.com/rspeele/SvgTargets.git"
 PROJECT="TargetApi/TargetApi.fsproj"   # relative to the repo root
@@ -37,6 +44,24 @@ if [ -z "$EMAIL" ]; then
 fi
 
 log() { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
+
+#-----------------------------------------------------------------------------#
+# 0. Pre-flight: make sure KESTREL_PORT isn't already taken by another service #
+#-----------------------------------------------------------------------------#
+# Co-hosted sites each need a unique localhost port (see header note). Bail early
+# if something other than THIS site's own service is already listening on it,
+# so we never end up with two domains proxying to one backend. Our own service
+# holding the port (a re-run) is fine and allowed.
+# (|| true so an empty match under `set -o pipefail` doesn't abort the script)
+port_holder_pid=$(sudo ss -ltnpH "sport = :$KESTREL_PORT" 2>/dev/null \
+    | grep -oE 'pid=[0-9]+' | head -1 | cut -d= -f2 || true)
+our_pid=$(systemctl show -p MainPID --value "$SERVICE_USER.service" 2>/dev/null || echo 0)
+if [ -n "$port_holder_pid" ] && [ "$port_holder_pid" != "$our_pid" ]; then
+    echo "ERROR: port $KESTREL_PORT is already in use by PID $port_holder_pid, which is not" >&2
+    echo "       this site's service ($SERVICE_USER). Co-hosted sites must each use a unique" >&2
+    echo "       port. Re-run with a free one, e.g.  KESTREL_PORT=5052 EMAIL=$EMAIL bash $0" >&2
+    exit 1
+fi
 
 #-----------------------------------------------------------------------------#
 # 1. System packages                                                          #
