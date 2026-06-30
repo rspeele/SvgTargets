@@ -78,4 +78,22 @@ type TargetController () =
             use mem = new MemoryStream()
             rendered.Save(mem)
             this.File(mem.ToArray(), "image/svg+xml") :> IActionResult
-            
+
+    // Lightweight catalog of every available target, consumed by the interactive
+    // builder page (builder.html) so its target list stays in sync with the code.
+    [<HttpGet>]
+    [<Route("/targets.json")>]
+    member this.List() : IActionResult =
+        let items =
+            Targets.allTargets
+            |> Array.map (fun t ->
+                let w, h = t.PaperSize
+                {|  organization = t.Organization
+                    identifier = t.Identifier
+                    name = t.Name
+                    distanceYards = t.Distance * yardsPerMeter
+                    paperWidthInches = w * inchesPerMeter
+                    paperHeightInches = h * inchesPerMeter
+                |})
+        this.Ok(items) :> IActionResult
+

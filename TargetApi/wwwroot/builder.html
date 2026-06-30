@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Target Builder &mdash; SVG Targets</title>
+    <style type="text/css">
+        :root {
+            --border: #cfcfcf;
+            --bg-panel: #f6f6f6;
+            --accent: #1b5e9c;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            color: #222;
+            line-height: 1.4;
+        }
+        header {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        header h1 { margin: 0 0 4px; font-size: 20px; }
+        header a { color: var(--accent); }
+        .layout {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+        }
+        form.controls {
+            flex: 1 1 340px;
+            min-width: 300px;
+        }
+        .preview-col {
+            flex: 1 1 380px;
+            min-width: 300px;
+            position: sticky;
+            top: 20px;
+        }
+        fieldset {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin: 0 0 16px;
+            padding: 12px 14px 14px;
+        }
+        legend { font-weight: bold; padding: 0 6px; }
+        .field { margin-bottom: 10px; }
+        .field > label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .hint { font-weight: normal; color: #666; font-size: 12px; }
+        .row { display: flex; gap: 6px; align-items: center; }
+        /* Monospace so the padded identifier column lines up the target names. */
+        #target { font-family: monospace; }
+        input[type="text"], input[type="number"], select {
+            padding: 6px 7px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            width: 100%;
+        }
+        input[type="color"] {
+            width: 38px;
+            height: 34px;
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            flex: 0 0 auto;
+            background: none;
+        }
+        .checks label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 14px;
+            margin-bottom: 6px;
+            font-weight: normal;
+        }
+        .checks input { width: auto; }
+        .two { display: flex; gap: 10px; }
+        .two > .field { flex: 1; }
+        .preview-box {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background:
+                repeating-conic-gradient(#eee 0% 25%, #fafafa 0% 50%) 50% / 24px 24px;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 320px;
+        }
+        .preview-box img {
+            max-width: 100%;
+            max-height: 70vh;
+            background: #fff;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        button, a.btn {
+            font-size: 14px;
+            padding: 8px 14px;
+            border: 1px solid var(--accent);
+            border-radius: 5px;
+            background: var(--accent);
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        button.secondary, a.btn.secondary {
+            background: #fff;
+            color: var(--accent);
+        }
+        .url-box {
+            width: 100%;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--bg-panel);
+            word-break: break-all;
+        }
+        .copied { color: #2e7d32; font-size: 13px; margin-left: 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Interactive Target Builder</h1>
+        <div>
+            Adjust the options to customize a target, preview it live, then open or download the SVG.
+            &nbsp;&middot;&nbsp; <a href="/">Home &amp; full documentation</a>
+        </div>
+    </header>
+
+    <div class="layout">
+        <form class="controls" autocomplete="off">
+            <fieldset>
+                <legend>Target</legend>
+                <div class="field">
+                    <label for="target">Choose a target</label>
+                    <select id="target"></select>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Scale to a different distance</legend>
+                <div class="field">
+                    <label for="scaleDist">
+                        Shooting distance
+                        <span class="hint" id="distHint"></span>
+                    </label>
+                    <div class="row">
+                        <input type="number" id="scaleDist" step="any" min="0" placeholder="leave blank for native" />
+                        <select id="scaleUnit" style="width:auto;">
+                            <option value="y">yards</option>
+                            <option value="m">meters</option>
+                            <option value="f">feet</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="two">
+                    <div class="field">
+                        <label for="oldCal">Original caliber <span class="hint">in</span></label>
+                        <input type="number" id="oldCal" step="any" min="0" placeholder="0.22" />
+                    </div>
+                    <div class="field">
+                        <label for="newCal">New caliber <span class="hint">in</span></label>
+                        <input type="number" id="newCal" step="any" min="0" placeholder="0.22" />
+                    </div>
+                </div>
+                <div class="hint">Caliber options only apply when a shooting distance is set.</div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Appearance</legend>
+                <div class="field">
+                    <label for="black">"Black" color <span class="hint">name or hex; e.g. gray to save ink</span></label>
+                    <div class="row">
+                        <input type="text" id="black" placeholder="black" />
+                        <input type="color" id="blackPick" value="#000000" title="Pick a color" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="white">"White" color</label>
+                    <div class="row">
+                        <input type="text" id="white" placeholder="white" />
+                        <input type="color" id="whitePick" value="#ffffff" title="Pick a color" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="ringThk">Ring thickness <span class="hint">inches; blank = automatic</span></label>
+                    <input type="number" id="ringThk" step="any" min="0" placeholder="automatic" />
+                </div>
+                <div class="checks">
+                    <label><input type="checkbox" id="info" checked /> Include info text at bottom</label>
+                    <label><input type="checkbox" id="dime" checked /> Include dime size reference</label>
+                    <label><input type="checkbox" id="border" /> Draw border around target</label>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Paper size (crops, does not scale)</legend>
+                <div class="two">
+                    <div class="field">
+                        <label for="paperW">Width <span class="hint">in</span></label>
+                        <input type="number" id="paperW" step="any" min="0" placeholder="native" />
+                    </div>
+                    <div class="field">
+                        <label for="paperH">Height <span class="hint">in</span></label>
+                        <input type="number" id="paperH" step="any" min="0" placeholder="native" />
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Sight-adjustment grid</legend>
+                <div class="two">
+                    <div class="field">
+                        <label for="gridX">Grid X spacing <span class="hint">in</span></label>
+                        <input type="number" id="gridX" step="any" min="0" placeholder="off" />
+                    </div>
+                    <div class="field">
+                        <label for="gridY">Grid Y spacing <span class="hint">in</span></label>
+                        <input type="number" id="gridY" step="any" min="0" placeholder="off" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="gridColor">Grid color <span class="hint">default red</span></label>
+                    <div class="row">
+                        <input type="text" id="gridColor" placeholder="red" />
+                        <input type="color" id="gridPick" value="#ff0000" title="Pick a color" />
+                    </div>
+                </div>
+            </fieldset>
+
+            <button type="button" class="secondary" id="resetBtn">Reset all options</button>
+        </form>
+
+        <div class="preview-col">
+            <div class="preview-box">
+                <img id="preview" alt="Target preview" />
+            </div>
+            <div class="actions">
+                <button type="button" id="openBtn">Open Image in new tab</button>
+                <a class="btn secondary" id="downloadLink" download>Download SVG</a>
+                <button type="button" class="secondary" id="copyBtn">Copy URL</button>
+                <span class="copied" id="copied" hidden>Copied!</span>
+            </div>
+            <div class="url-box" id="urlBox"></div>
+        </div>
+    </div>
+
+    <script>
+        "use strict";
+        const $ = (id) => document.getElementById(id);
+        const targetSelect = $("target");
+        let targets = [];
+        let byKey = {};
+
+        function selectedTarget() {
+            return byKey[targetSelect.value];
+        }
+
+        function num(id) {
+            const v = $(id).value.trim();
+            return v === "" ? null : v;
+        }
+
+        function buildUrl() {
+            const t = selectedTarget();
+            if (!t) return "";
+            const p = new URLSearchParams();
+
+            const dist = num("scaleDist");
+            if (dist !== null) {
+                p.set("scaleDistance", dist + $("scaleUnit").value);
+                if (num("oldCal") !== null) p.set("scaleOldCaliber", num("oldCal"));
+                if (num("newCal") !== null) p.set("scaleNewCaliber", num("newCal"));
+            }
+            if (num("ringThk") !== null) p.set("ringThickness", num("ringThk"));
+            if ($("black").value.trim()) p.set("black", $("black").value.trim());
+            if ($("white").value.trim()) p.set("white", $("white").value.trim());
+            // info and dime default ON in the renderer, so only send when turned off.
+            if (!$("info").checked) p.set("info", "0");
+            if (!$("dime").checked) p.set("dime", "0");
+            // border defaults OFF, so only send when turned on.
+            if ($("border").checked) p.set("border", "1");
+            if (num("paperW") !== null) p.set("paperWidth", num("paperW"));
+            if (num("paperH") !== null) p.set("paperHeight", num("paperH"));
+            const gx = num("gridX"), gy = num("gridY");
+            if (gx !== null) p.set("gridX", gx);
+            if (gy !== null) p.set("gridY", gy);
+            if ($("gridColor").value.trim() && (gx !== null || gy !== null)) {
+                p.set("gridColor", $("gridColor").value.trim());
+            }
+
+            const q = p.toString();
+            return "/" + encodeURIComponent(t.organization) + "/" +
+                   encodeURIComponent(t.identifier) + ".svg" + (q ? "?" + q : "");
+        }
+
+        let debounce;
+        function refresh() {
+            const url = buildUrl();
+            if (!url) return;
+            $("urlBox").textContent = location.origin + url;
+            $("downloadLink").href = url;
+            const t = selectedTarget();
+            $("downloadLink").setAttribute("download", t.identifier + ".svg");
+            // Disable caliber inputs unless a scaling distance is given.
+            const scaling = num("scaleDist") !== null;
+            $("oldCal").disabled = !scaling;
+            $("newCal").disabled = !scaling;
+            clearTimeout(debounce);
+            debounce = setTimeout(() => { $("preview").src = url; }, 200);
+        }
+
+        function onTargetChanged() {
+            const t = selectedTarget();
+            if (!t) return;
+            $("distHint").textContent = "(native ≈ " + t.distanceYards.toFixed(1) + " yd)";
+            $("paperW").placeholder = t.paperWidthInches.toFixed(1);
+            $("paperH").placeholder = t.paperHeightInches.toFixed(1);
+            refresh();
+        }
+
+        // Sync each color picker into its companion text field.
+        function linkColor(pickId, textId) {
+            $(pickId).addEventListener("input", () => {
+                $(textId).value = $(pickId).value;
+                refresh();
+            });
+        }
+        linkColor("blackPick", "black");
+        linkColor("whitePick", "white");
+        linkColor("gridPick", "gridColor");
+
+        // Any control change refreshes the preview.
+        document.querySelector("form.controls").addEventListener("input", (e) => {
+            if (e.target === targetSelect) onTargetChanged();
+            else refresh();
+        });
+
+        $("openBtn").addEventListener("click", () => {
+            const url = buildUrl();
+            if (url) window.open(url, "_blank");
+        });
+
+        $("copyBtn").addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(location.origin + buildUrl());
+                const c = $("copied");
+                c.hidden = false;
+                setTimeout(() => { c.hidden = true; }, 1500);
+            } catch (_) { /* clipboard may be unavailable; URL is shown below regardless */ }
+        });
+
+        $("resetBtn").addEventListener("click", () => {
+            document.querySelector("form.controls").reset();
+            // reset() restores HTML defaults (info/dime checked, border unchecked).
+            onTargetChanged();
+        });
+
+        function preselect() {
+            // Support ?target=NRA/B-6  or  ?org=NRA&id=B-6
+            const params = new URLSearchParams(location.search);
+            let org = params.get("org"), id = params.get("id");
+            const combined = params.get("target");
+            if (combined && combined.includes("/")) {
+                [org, id] = combined.split("/");
+            }
+            if (org && id) {
+                const key = org + "/" + id;
+                if (byKey[key]) { targetSelect.value = key; return; }
+            }
+            if (byKey["NRA/B-6"]) targetSelect.value = "NRA/B-6";
+        }
+
+        fetch("/targets.json")
+            .then((r) => r.json())
+            .then((data) => {
+                targets = data;
+                const groups = {};
+                for (const t of targets) {
+                    const key = t.organization + "/" + t.identifier;
+                    byKey[key] = t;
+                    (groups[t.organization] = groups[t.organization] || []).push(t);
+                }
+                // Pad each identifier with non-breaking spaces (collapsible regular
+                // spaces won't work in <option>) so every name starts at the same
+                // column. Width is the longest identifier across all groups + a gap.
+                const NBSP = " ";
+                const idWidth = Math.max(...targets.map((t) => t.identifier.length)) + 2;
+                for (const org of Object.keys(groups)) {
+                    const og = document.createElement("optgroup");
+                    og.label = org;
+                    for (const t of groups[org]) {
+                        const opt = document.createElement("option");
+                        opt.value = org + "/" + t.identifier;
+                        opt.textContent =
+                            t.identifier + NBSP.repeat(idWidth - t.identifier.length) + t.name;
+                        og.appendChild(opt);
+                    }
+                    targetSelect.appendChild(og);
+                }
+                preselect();
+                onTargetChanged();
+            })
+            .catch(() => {
+                $("urlBox").textContent = "Could not load target list. Please reload the page.";
+            });
+    </script>
+</body>
+</html>
