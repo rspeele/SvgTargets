@@ -25,6 +25,12 @@ type Discipline =
         | Pistol -> "Pistol"
         | Rifle -> "Rifle"
 
+/// Non-scoring artwork drawn over a target. Decorations scale with shooting
+/// distance like the rings, but receive no caliber offset and are not scored.
+/// Coordinates are relative to the target center, in meters (+x right, +y down).
+type Decoration =
+    | Line of X1 : float<m> * Y1 : float<m> * X2 : float<m> * Y2 : float<m> * Thickness : float<m> * Fill : RingFill
+
 type TargetDefinition =
     {   Organization : string // e.g. "NRA"
         Identifier : string // e.g. "B-6"
@@ -33,6 +39,7 @@ type TargetDefinition =
         PaperSize : float<m> * float<m> // w, h
         Distance : float<m>
         LabelClockPositions : float array
+        Decorations : Decoration array
     }
 
 module Targets =
@@ -69,6 +76,7 @@ module Targets =
                 PaperSize = (inch 8.5, inch 10.0)
                 Distance = foot 50.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let b3 =
@@ -86,6 +94,7 @@ module Targets =
                 PaperSize = (inch 8.5, inch 10.0)
                 Distance = foot 50.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let b4 =
@@ -104,6 +113,7 @@ module Targets =
                 PaperSize = (inch 10.5, inch 12.0)
                 Distance = yard 20.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let b5 =
@@ -121,6 +131,7 @@ module Targets =
                 PaperSize = (inch 10.5, inch 12.0)
                 Distance = yard 20.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let b16 =
@@ -139,6 +150,7 @@ module Targets =
                 PaperSize = (inch 10.5, inch 12.0)
                 Distance = yard 25.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let b6 =
@@ -157,6 +169,7 @@ module Targets =
                 PaperSize = (inch 21.0, inch 24.0)
                 Distance = yard 50.0
                 LabelClockPositions = [| 3.0; 9.0 |]
+                Decorations = [||]
             }
 
         let b8 =
@@ -167,6 +180,7 @@ module Targets =
                 PaperSize = (inch 21.0, inch 24.0)
                 Distance = yard 25.0
                 LabelClockPositions = [| 3.0; 9.0 |]
+                Decorations = [||]
             }
 
         let b40 =
@@ -189,6 +203,7 @@ module Targets =
                 PaperSize = (inch 7.0, inch 8.0)
                 Distance = yard 11.0
                 LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+                Decorations = [||]
             }
 
         let a17 =
@@ -206,6 +221,7 @@ module Targets =
                 PaperSize = (inch 4.0, inch 4.0)
                 Distance = foot 50.0
                 LabelClockPositions = [| |]
+                Decorations = [||]
             }
 
         let usas50 =
@@ -225,6 +241,7 @@ module Targets =
                 PaperSize = (inch 4.0, inch 4.0)
                 Distance = foot 50.0
                 LabelClockPositions = [| |]
+                Decorations = [||]
             }
 
         let a32 =
@@ -242,6 +259,7 @@ module Targets =
                 PaperSize = (inch 4.0, inch 5.0)
                 Distance = foot 50.0
                 LabelClockPositions = [| |]
+                Decorations = [||]
             }
 
         let a7 =
@@ -259,6 +277,7 @@ module Targets =
                 PaperSize = (inch 4.0, inch 5.0)
                 Distance = foot 75.0
                 LabelClockPositions = [| |]
+                Decorations = [||]
             }
 
         let a23 =
@@ -277,6 +296,7 @@ module Targets =
                 PaperSize = (inch 6.0, inch 7.0)
                 Distance = yard 50.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let a27 =
@@ -297,6 +317,7 @@ module Targets =
                 PaperSize = (inch 6.0, inch 7.0)
                 Distance = yard 50.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let a51 =
@@ -320,6 +341,7 @@ module Targets =
                 PaperSize = (mm 180.0, mm 180.0)
                 Distance = yard 50.0
                 LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+                Decorations = [||]
             }
 
         let a26 =
@@ -340,6 +362,7 @@ module Targets =
                 PaperSize = (inch 6.0, inch 7.0)
                 Distance = 50.0<m>
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let a50 =
@@ -363,6 +386,7 @@ module Targets =
                 PaperSize = (mm 180.0, mm 180.0)
                 Distance = 50.0<m>
                 LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+                Decorations = [||]
             }
 
         let a25 =
@@ -381,6 +405,7 @@ module Targets =
                 PaperSize = (inch 14.0, inch 14.0)
                 Distance = yard 100.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let a33 =
@@ -402,6 +427,7 @@ module Targets =
                 PaperSize = (inch 14.0, inch 14.0)
                 Distance = yard 100.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let a21 =
@@ -419,6 +445,7 @@ module Targets =
                 PaperSize = (inch 22.0, inch 24.0)
                 Distance = yard 200.0
                 LabelClockPositions = [| 9.0; 3.0 |]
+                Decorations = [||]
             }
 
         let a31 =
@@ -435,6 +462,7 @@ module Targets =
                 PaperSize = (inch 6.0, inch 8.0)
                 Distance = yard 50.0
                 LabelClockPositions = [| 9.0 |]
+                Decorations = [||]
             }
 
         let a37 =
@@ -453,6 +481,7 @@ module Targets =
                 PaperSize = (inch 8.0, inch 8.0)
                 Distance = yard 100.0
                 LabelClockPositions = [| 3.0; 9.0 |]
+                Decorations = [||]
             }
 
         let a38 =
@@ -471,6 +500,7 @@ module Targets =
                 PaperSize = (inch 8.0, inch 8.0)
                 Distance = yard 100.0
                 LabelClockPositions = [| 3.0; 9.0 |]
+                Decorations = [||]
             }
 
         let a39 =
@@ -489,6 +519,7 @@ module Targets =
                 PaperSize = (inch 8.0, inch 8.0)
                 Distance = yard 100.0
                 LabelClockPositions = [| 3.0; 9.0 |]
+                Decorations = [||]
             }
 
         let sr1 =
@@ -507,6 +538,7 @@ module Targets =
                 PaperSize = (inch 20.0, inch 20.0)
                 Distance = yard 100.0
                 LabelClockPositions = [| 3.0 |]
+                Decorations = [||]
             }
 
         let sr21 =
@@ -525,6 +557,7 @@ module Targets =
                 PaperSize = (inch 20.0, inch 20.0)
                 Distance = yard 100.0
                 LabelClockPositions = [| 3.0 |]
+                Decorations = [||]
             }
 
         let mr31 =
@@ -543,6 +576,7 @@ module Targets =
                 PaperSize = (inch 20.0, inch 20.0)
                 Distance = yard 100.0
                 LabelClockPositions = [| 3.0 |]
+                Decorations = [||]
             }
 
         let sr =
@@ -561,6 +595,7 @@ module Targets =
                 PaperSize = (inch 40.0, inch 40.0)
                 Distance = yard 200.0
                 LabelClockPositions = [| 3.0; 9.0 |]
+                Decorations = [||]
             }
 
         let sr42 =
@@ -579,6 +614,7 @@ module Targets =
                 PaperSize = (inch 28.0, inch 28.0)
                 Distance = yard 200.0
                 LabelClockPositions = [| 3.0; 9.0 |]
+                Decorations = [||]
             }
 
         let mr52 =
@@ -597,6 +633,7 @@ module Targets =
                 PaperSize = (inch 28.0, inch 28.0)
                 Distance = yard 200.0
                 LabelClockPositions = [| 3.0 |]
+                Decorations = [||]
             }
 
         let sr5 =
@@ -623,6 +660,7 @@ module Targets =
                 PaperSize = (inch 40.0, inch 40.0)
                 Distance = yard 300.0
                 LabelClockPositions = [| 3.0; 9.0 |]
+                Decorations = [||]
             }
 
         let mr63 =
@@ -641,6 +679,7 @@ module Targets =
                 PaperSize = (inch 40.0, inch 40.0)
                 Distance = yard 300.0
                 LabelClockPositions = [| 3.0 |]
+                Decorations = [||]
             }
 
         let mr65 =
@@ -659,6 +698,7 @@ module Targets =
                 PaperSize = (inch 40.0, inch 40.0)
                 Distance = yard 500.0
                 LabelClockPositions = [| 12.0 |]
+                Decorations = [||]
             }
 
         let mr1 =
@@ -677,6 +717,7 @@ module Targets =
                 PaperSize = (inch 64.0, inch 64.0)
                 Distance = yard 600.0
                 LabelClockPositions = [| 12.0 |]
+                Decorations = [||]
             }
 
         let lr =
@@ -693,6 +734,7 @@ module Targets =
                 PaperSize = (inch 72.0, inch 72.0)
                 Distance = yard 1000.0
                 LabelClockPositions = [| 12.0 |]
+                Decorations = [||]
             }
 
         let pistolTargets =
@@ -737,6 +779,7 @@ module Targets =
                 PaperSize = (mm 1050.0, mm 1050.0)
                 Distance = 300.0<m>
                 LabelClockPositions = [| 1.5; 4.5; 7.5; 10.5 |]
+                Decorations = [||]
             }
 
         let r50 =
@@ -760,6 +803,7 @@ module Targets =
                 PaperSize = (mm 180.0, mm 180.0)
                 Distance = 50.0<m>
                 LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+                Decorations = [||]
             }
 
         let ar10 =
@@ -781,6 +825,7 @@ module Targets =
                 PaperSize = (mm 100.0, mm 100.0)
                 Distance = 10.0<m>
                 LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+                Decorations = [||]
             }
 
         let p25 =
@@ -803,6 +848,7 @@ module Targets =
                 PaperSize = (mm 550.0, mm 550.0)
                 Distance = 25.0<m>
                 LabelClockPositions = [| 12.0; 3.0; 6.0; 9.0 |]
+                Decorations = [||]
             }
 
         let p50 =
@@ -819,6 +865,34 @@ module Targets =
                 Name = "10m Air Pistol Target"
             }
 
+        let rf25 =
+            {   Organization = issf
+                Identifier = "RF25"
+                Name = "25m Rapid Fire Pistol Target"
+                Rings =
+                    [|  ring "X" (mmdi 50.0) |> black |> noLabel
+                        ring "10" (mmdi 100.0) |> black |> noLabel
+                        ring "9" (mmdi 180.0) |> black
+                        ring "8" (mmdi 260.0) |> black
+                        ring "7" (mmdi 340.0) |> black
+                        ring "6" (mmdi 420.0) |> black
+                        ring "5" (mmdi 500.0) |> black
+                    |]
+                PaperSize = (mm 550.0, mm 550.0)
+                Distance = 25.0<m>
+                // Numbers 5-9 print on the vertical axis only; the horizontal axis
+                // carries the two white aiming lines (see Decorations) instead.
+                LabelClockPositions = [| 12.0; 6.0 |]
+                Decorations =
+                    // Two 125mm-long, 5mm-wide white horizontal aiming lines, one to
+                    // the left and one to the right of center. Each starts at the outer
+                    // edge of the black (the 5-ring, 250mm from center) and runs 125mm
+                    // inward to 125mm from center.
+                    [|  Line (mm (-250.0), 0.0<m>, mm (-125.0), 0.0<m>, mm 5.0, White)
+                        Line (mm 125.0, 0.0<m>, mm 250.0, 0.0<m>, mm 5.0, White)
+                    |]
+            }
+
         let rifleTargets =
             [|  r300
                 r50
@@ -828,6 +902,7 @@ module Targets =
         let pistolTargets =
             [|  p25
                 p50
+                rf25
                 ap10
             |]
 

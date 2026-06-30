@@ -177,6 +177,20 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                             let (x, y) = offsetClock (centerX, centerY) clock middleRadius
                             yield textElem (string clock) (mm x) (mm y)
         |]
+    let decorations =
+        [|  for d in target.Decorations do
+                match d with
+                | Line (x1, y1, x2, y2, thickness, fill) ->
+                    yield XElement(xn "line"
+                        , attr "x1" (mm (centerX + x1))
+                        , attr "y1" (mm (centerY + y1))
+                        , attr "x2" (mm (centerX + x2))
+                        , attr "y2" (mm (centerY + y2))
+                        , attr "stroke" (color fill)
+                        , attr "stroke-width" (mm thickness)
+                        , attr "stroke-linecap" "butt"
+                        )
+        |]
     let svgElement =
         XElement(xn "svg"
             , attr "version" "1.1"
@@ -197,6 +211,7 @@ let renderTarget (config : SvgConfiguration) (target : TargetDefinition) =
                 )
             , XElement(xn "g", [| yield attr "id" "rings" :> obj; for ring in rings do yield upcast ring |])
             , XElement(xn "g", [| yield attr "id" "ring-labels" :> obj; for label in labels do yield upcast label |])
+            , XElement(xn "g", [| yield attr "id" "decorations" :> obj; for d in decorations do yield upcast d |])
             , if config.IncludeInfo then info else null
             , if config.IncludeRuler then ruler else null
             , grid

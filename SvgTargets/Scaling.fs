@@ -13,6 +13,13 @@ let private scaleRings (radiusMultiplier : float) (target : TargetDefinition) =
         Rings = target.Rings |> Array.map (fun r -> { r with Radius = r.Radius * radiusMultiplier })
     }
 
+// Decorations are non-scoring artwork, so they only get the uniform distance
+// scale (no caliber offset): scale their coordinates and thickness about center.
+let private scaleDecoration (multiplier : float) (decoration : Decoration) =
+    match decoration with
+    | Line (x1, y1, x2, y2, thickness, fill) ->
+        Line (x1 * multiplier, y1 * multiplier, x2 * multiplier, y2 * multiplier, thickness * multiplier, fill)
+
 let private describeDistance (distance : float<m>) =
     let units =
         [   (distance * yardsPerMeter, "y")
@@ -42,6 +49,7 @@ let scale (originalCaliber : float<m>) (newCaliber : float<m>) (newDistance : fl
             |> Seq.map (fun r -> { r with Radius = max 0.0<m> r.Radius; Fill = if r.Radius <= nearestRingToRadius.Radius then Black else White })
             |> Seq.toArray
         PaperSize = oldW * visualDistanceRatio, oldH * visualDistanceRatio
+        Decorations = newShootableTarget.Decorations |> Array.map (scaleDecoration distanceRatio)
         Name = newShootableTarget.Name + " (scaled to " + describeDistance newDistance + ")"
     }
     
