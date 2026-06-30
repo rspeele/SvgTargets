@@ -58,7 +58,7 @@
         .hint { font-weight: normal; color: #666; font-size: 12px; }
         .row { display: flex; gap: 6px; align-items: center; }
         /* Monospace so the padded identifier column lines up the target names. */
-        #target { font-family: monospace; }
+        #target, #target2 { font-family: monospace; }
         input[type="text"], input[type="number"], select {
             padding: 6px 7px;
             border: 1px solid var(--border);
@@ -97,12 +97,22 @@
             align-items: center;
             min-height: 320px;
         }
-        .preview-box img {
-            max-width: 100%;
-            max-height: 70vh;
-            background: #fff;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+        /* Overlay stage: both target images are absolutely positioned and centered
+           on the same point, then sized by JS to a common physical scale. */
+        #stage {
+            position: relative;
+            width: 100%;
+            height: 70vh;
         }
+        #stage img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+        }
+        #previewA { box-shadow: 0 1px 6px rgba(0,0,0,0.25); }
+        #previewB { opacity: 0.5; }
         .actions {
             display: flex;
             flex-wrap: wrap;
@@ -133,6 +143,7 @@
             border-radius: 4px;
             background: var(--bg-panel);
             word-break: break-all;
+            white-space: pre-wrap;
         }
         .copied { color: #2e7d32; font-size: 13px; margin-left: 4px; }
     </style>
@@ -216,6 +227,80 @@
                 </div>
             </fieldset>
 
+            <div class="checks" style="margin: 0 0 16px;">
+                <label><input type="checkbox" id="compare" /> <strong>Compare to another target</strong> (overlaid at the same center, 50% opacity)</label>
+            </div>
+
+            <div id="secondaryControls" style="display:none;">
+                <fieldset>
+                    <legend>Second target</legend>
+                    <div class="field">
+                        <label for="category2">Category</label>
+                        <select id="category2"></select>
+                    </div>
+                    <div class="field">
+                        <label for="target2">Target</label>
+                        <select id="target2"></select>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Second target &mdash; scale to a different distance</legend>
+                    <div class="field">
+                        <label for="scaleDist2">
+                            Shooting distance
+                            <span class="hint" id="distHint2"></span>
+                        </label>
+                        <div class="row">
+                            <input type="number" id="scaleDist2" step="any" min="0" placeholder="leave blank for native" />
+                            <select id="scaleUnit2" style="width:auto;">
+                                <option value="y">yards</option>
+                                <option value="m">meters</option>
+                                <option value="f">feet</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="two">
+                        <div class="field">
+                            <label for="oldCal2">Original caliber <span class="hint">in</span></label>
+                            <input type="number" id="oldCal2" step="any" min="0" placeholder="0.22" />
+                        </div>
+                        <div class="field">
+                            <label for="newCal2">New caliber <span class="hint">in</span></label>
+                            <input type="number" id="newCal2" step="any" min="0" placeholder="0.22" />
+                        </div>
+                    </div>
+                    <div class="hint">Caliber options only apply when a shooting distance is set.</div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Second target &mdash; appearance</legend>
+                    <div class="field">
+                        <label for="black2">"Black" color <span class="hint">name or hex</span></label>
+                        <div class="row">
+                            <input type="text" id="black2" placeholder="black" />
+                            <input type="color" id="blackPick2" value="#000000" title="Pick a color" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="white2">"White" color</label>
+                        <div class="row">
+                            <input type="text" id="white2" placeholder="white" />
+                            <input type="color" id="whitePick2" value="#ffffff" title="Pick a color" />
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="ringThk2">Ring thickness <span class="hint">inches; blank = automatic</span></label>
+                        <input type="number" id="ringThk2" step="any" min="0" placeholder="automatic" />
+                    </div>
+                    <div class="checks">
+                        <label><input type="checkbox" id="info2" checked /> Include info text at bottom</label>
+                        <label><input type="checkbox" id="dime2" checked /> Include dime size reference</label>
+                        <label><input type="checkbox" id="border2" /> Draw border around target</label>
+                    </div>
+                </fieldset>
+            </div>
+
             <fieldset>
                 <legend>Paper size (crops, does not scale)</legend>
                 <div class="two">
@@ -256,7 +341,10 @@
 
         <div class="preview-col">
             <div class="preview-box">
-                <img id="preview" alt="Target preview" />
+                <div class="stage" id="stage">
+                    <img id="previewA" alt="Target preview" />
+                    <img id="previewB" alt="Second target preview" style="display:none;" />
+                </div>
             </div>
             <div class="actions">
                 <button type="button" id="openBtn">Open Image in new tab</button>
@@ -273,102 +361,188 @@
         const $ = (id) => document.getElementById(id);
         const categorySelect = $("category");
         const targetSelect = $("target");
+        const imgA = $("previewA");
+        const imgB = $("previewB");
         let catData = [];   // [{ category, organization, discipline, targets: [...] }]
         let byKey = {};     // "ORG/ID" -> target (with organization + catIndex attached)
 
-        function selectedTarget() {
-            return byKey[targetSelect.value];
-        }
-
         function num(id) {
-            const v = $(id).value.trim();
+            const el = $(id);
+            const v = el ? el.value.trim() : "";
             return v === "" ? null : v;
         }
+        function txt(id) {
+            const el = $(id);
+            return el ? el.value.trim() : "";
+        }
+        function targetFor(suffix) { return byKey[$("target" + suffix).value]; }
 
-        function buildUrl() {
-            const t = selectedTarget();
+        // Build the .svg URL for one target. suffix "" is the primary target, "2"
+        // the comparison target. Paper size and grid apply to the primary only.
+        function buildUrlFor(suffix) {
+            const t = targetFor(suffix);
             if (!t) return "";
             const p = new URLSearchParams();
-
-            const dist = num("scaleDist");
+            const dist = num("scaleDist" + suffix);
             if (dist !== null) {
-                p.set("scaleDistance", dist + $("scaleUnit").value);
-                if (num("oldCal") !== null) p.set("scaleOldCaliber", num("oldCal"));
-                if (num("newCal") !== null) p.set("scaleNewCaliber", num("newCal"));
+                p.set("scaleDistance", dist + $("scaleUnit" + suffix).value);
+                if (num("oldCal" + suffix) !== null) p.set("scaleOldCaliber", num("oldCal" + suffix));
+                if (num("newCal" + suffix) !== null) p.set("scaleNewCaliber", num("newCal" + suffix));
             }
-            if (num("ringThk") !== null) p.set("ringThickness", num("ringThk"));
-            if ($("black").value.trim()) p.set("black", $("black").value.trim());
-            if ($("white").value.trim()) p.set("white", $("white").value.trim());
+            if (num("ringThk" + suffix) !== null) p.set("ringThickness", num("ringThk" + suffix));
+            if (txt("black" + suffix)) p.set("black", txt("black" + suffix));
+            if (txt("white" + suffix)) p.set("white", txt("white" + suffix));
             // info and dime default ON in the renderer, so only send when turned off.
-            if (!$("info").checked) p.set("info", "0");
-            if (!$("dime").checked) p.set("dime", "0");
+            if (!$("info" + suffix).checked) p.set("info", "0");
+            if (!$("dime" + suffix).checked) p.set("dime", "0");
             // border defaults OFF, so only send when turned on.
-            if ($("border").checked) p.set("border", "1");
-            if (num("paperW") !== null) p.set("paperWidth", num("paperW"));
-            if (num("paperH") !== null) p.set("paperHeight", num("paperH"));
-            const gx = num("gridX"), gy = num("gridY");
-            if (gx !== null) p.set("gridX", gx);
-            if (gy !== null) p.set("gridY", gy);
-            if ($("gridColor").value.trim() && (gx !== null || gy !== null)) {
-                p.set("gridColor", $("gridColor").value.trim());
+            if ($("border" + suffix).checked) p.set("border", "1");
+            if (suffix === "") {
+                if (num("paperW") !== null) p.set("paperWidth", num("paperW"));
+                if (num("paperH") !== null) p.set("paperHeight", num("paperH"));
+                const gx = num("gridX"), gy = num("gridY");
+                if (gx !== null) p.set("gridX", gx);
+                if (gy !== null) p.set("gridY", gy);
+                if (txt("gridColor") && (gx !== null || gy !== null)) p.set("gridColor", txt("gridColor"));
             }
-
             const q = p.toString();
             return "/" + encodeURIComponent(t.organization) + "/" +
                    encodeURIComponent(t.identifier) + ".svg" + (q ? "?" + q : "");
         }
 
-        let debounce;
-        function refresh() {
-            const url = buildUrl();
-            if (!url) return;
-            $("urlBox").textContent = location.origin + url;
-            $("downloadLink").href = url;
-            const t = selectedTarget();
-            $("downloadLink").setAttribute("download", t.identifier + ".svg");
-            // Disable caliber inputs unless a scaling distance is given.
-            const scaling = num("scaleDist") !== null;
-            $("oldCal").disabled = !scaling;
-            $("newCal").disabled = !scaling;
-            clearTimeout(debounce);
-            debounce = setTimeout(() => { $("preview").src = url; }, 200);
+        function setCaliberEnabled(suffix) {
+            const scaling = num("scaleDist" + suffix) !== null;
+            $("oldCal" + suffix).disabled = !scaling;
+            $("newCal" + suffix).disabled = !scaling;
         }
 
-        function onTargetChanged() {
-            const t = selectedTarget();
+        // Size both images to a common physical scale and center them. An SVG img's
+        // naturalWidth/Height is its mm size at a fixed 96dpi, so it is proportional
+        // to the real target; scaling every shown image by the same factor keeps 1
+        // inch on target A equal to 1 inch on target B, while CSS centers both bulls.
+        function layoutPreview() {
+            const compare = $("compare").checked;
+            const stage = $("stage");
+            const shown = compare ? [imgA, imgB] : [imgA];
+            let maxNat = 0;
+            for (const im of shown) {
+                if (im.naturalWidth > 0) maxNat = Math.max(maxNat, im.naturalWidth, im.naturalHeight);
+            }
+            if (maxNat === 0) return;
+            const fitPx = Math.min(stage.clientWidth, stage.clientHeight) * 0.95;
+            const k = fitPx / maxNat;
+            for (const im of [imgA, imgB]) {
+                if (im.naturalWidth > 0) {
+                    im.style.width = (im.naturalWidth * k) + "px";
+                    im.style.height = (im.naturalHeight * k) + "px";
+                }
+            }
+        }
+
+        let debounce;
+        function refresh() {
+            const urlA = buildUrlFor("");
+            if (!urlA) return;
+            const compare = $("compare").checked;
+            const urlB = compare ? buildUrlFor("2") : "";
+
+            $("urlBox").textContent = location.origin + urlA + (urlB ? "\n" + location.origin + urlB : "");
+            // Open/Download act on the primary target; the overlay is preview-only.
+            $("downloadLink").href = urlA;
+            $("downloadLink").setAttribute("download", targetFor("").identifier + ".svg");
+
+            setCaliberEnabled("");
+            if (compare) setCaliberEnabled("2");
+
+            clearTimeout(debounce);
+            debounce = setTimeout(() => {
+                imgA.src = urlA;
+                if (compare && urlB) {
+                    imgB.style.display = "";
+                    imgB.src = urlB;
+                } else {
+                    imgB.style.display = "none";
+                    imgB.removeAttribute("src");
+                    layoutPreview();
+                }
+            }, 200);
+        }
+
+        function onTargetChanged(suffix) {
+            const t = targetFor(suffix);
             if (!t) return;
-            $("distHint").textContent = "(native ≈ " + t.distanceYards.toFixed(1) + " yd)";
-            $("paperW").placeholder = t.paperWidthInches.toFixed(1);
-            $("paperH").placeholder = t.paperHeightInches.toFixed(1);
+            $("distHint" + suffix).textContent = "(native ≈ " + t.distanceYards.toFixed(1) + " yd)";
+            if (suffix === "") {
+                $("paperW").placeholder = t.paperWidthInches.toFixed(1);
+                $("paperH").placeholder = t.paperHeightInches.toFixed(1);
+            }
             refresh();
+        }
+
+        // Fill a target dropdown from the chosen category. Identifiers are padded
+        // with non-breaking spaces (regular runs of spaces collapse in <option>) so,
+        // with the monospace font, every target name starts at the same column.
+        function populateTargets(catIndex, suffix) {
+            const c = catData[catIndex];
+            const sel = $("target" + suffix);
+            sel.innerHTML = "";
+            const NBSP = " ";
+            const idWidth = Math.max(...c.targets.map((t) => t.identifier.length)) + 2;
+            for (const t of c.targets) {
+                const opt = document.createElement("option");
+                opt.value = c.organization + "/" + t.identifier;
+                opt.textContent =
+                    t.identifier + NBSP.repeat(idWidth - t.identifier.length) + t.name;
+                sel.appendChild(opt);
+            }
+        }
+
+        function onCategoryChanged(suffix) {
+            populateTargets(parseInt($("category" + suffix).value, 10), suffix);
+            onTargetChanged(suffix);
         }
 
         // Sync each color picker into its companion text field.
         function linkColor(pickId, textId) {
-            $(pickId).addEventListener("input", () => {
-                $(textId).value = $(pickId).value;
+            const pick = $(pickId);
+            if (!pick) return;
+            pick.addEventListener("input", () => {
+                $(textId).value = pick.value;
                 refresh();
             });
         }
         linkColor("blackPick", "black");
         linkColor("whitePick", "white");
         linkColor("gridPick", "gridColor");
+        linkColor("blackPick2", "black2");
+        linkColor("whitePick2", "white2");
 
-        // Any control change refreshes the preview.
         document.querySelector("form.controls").addEventListener("input", (e) => {
-            if (e.target === categorySelect) onCategoryChanged();
-            else if (e.target === targetSelect) onTargetChanged();
-            else refresh();
+            const id = e.target.id;
+            if (id === "category") onCategoryChanged("");
+            else if (id === "category2") onCategoryChanged("2");
+            else if (id === "target") onTargetChanged("");
+            else if (id === "target2") onTargetChanged("2");
+            else if (id === "compare") {
+                $("secondaryControls").style.display = e.target.checked ? "" : "none";
+                refresh();
+            } else {
+                refresh();
+            }
         });
 
+        imgA.addEventListener("load", layoutPreview);
+        imgB.addEventListener("load", layoutPreview);
+        window.addEventListener("resize", layoutPreview);
+
         $("openBtn").addEventListener("click", () => {
-            const url = buildUrl();
+            const url = buildUrlFor("");
             if (url) window.open(url, "_blank");
         });
 
         $("copyBtn").addEventListener("click", async () => {
             try {
-                await navigator.clipboard.writeText(location.origin + buildUrl());
+                await navigator.clipboard.writeText($("urlBox").textContent);
                 const c = $("copied");
                 c.hidden = false;
                 setTimeout(() => { c.hidden = true; }, 1500);
@@ -377,31 +551,10 @@
 
         $("resetBtn").addEventListener("click", () => {
             document.querySelector("form.controls").reset();
-            // reset() restores HTML defaults (info/dime checked, border unchecked).
-            onTargetChanged();
+            $("secondaryControls").style.display = $("compare").checked ? "" : "none";
+            onTargetChanged("");
+            onTargetChanged("2");
         });
-
-        // Fill the target dropdown from the chosen category. Identifiers are padded
-        // with non-breaking spaces (regular runs of spaces collapse in <option>) so,
-        // with the monospace font, every target name starts at the same column.
-        function populateTargets(catIndex) {
-            const c = catData[catIndex];
-            targetSelect.innerHTML = "";
-            const NBSP = " ";
-            const idWidth = Math.max(...c.targets.map((t) => t.identifier.length)) + 2;
-            for (const t of c.targets) {
-                const opt = document.createElement("option");
-                opt.value = c.organization + "/" + t.identifier;
-                opt.textContent =
-                    t.identifier + NBSP.repeat(idWidth - t.identifier.length) + t.name;
-                targetSelect.appendChild(opt);
-            }
-        }
-
-        function onCategoryChanged() {
-            populateTargets(parseInt(categorySelect.value, 10));
-            onTargetChanged();
-        }
 
         function preselectKey() {
             // Support ?target=NRA/B-6  or  ?org=NRA&id=B-6
@@ -420,21 +573,32 @@
             .then((data) => {
                 catData = data;
                 data.forEach((c, i) => {
-                    const opt = document.createElement("option");
-                    opt.value = String(i);
-                    opt.textContent = c.category;
-                    categorySelect.appendChild(opt);
+                    for (const sel of [categorySelect, $("category2")]) {
+                        const opt = document.createElement("option");
+                        opt.value = String(i);
+                        opt.textContent = c.category;
+                        sel.appendChild(opt);
+                    }
                     for (const t of c.targets) {
                         byKey[c.organization + "/" + t.identifier] =
                             Object.assign({}, t, { organization: c.organization, catIndex: i });
                     }
                 });
+
+                // Primary target
                 const startKey = preselectKey() || (byKey["NRA/B-6"] ? "NRA/B-6" : null);
                 const start = startKey ? byKey[startKey] : Object.values(byKey)[0];
                 categorySelect.value = String(start.catIndex);
-                populateTargets(start.catIndex);
+                populateTargets(start.catIndex, "");
                 targetSelect.value = start.organization + "/" + start.identifier;
-                onTargetChanged();
+                onTargetChanged("");
+
+                // Comparison target (hidden until "Compare" is checked); default B-8.
+                const startB = byKey["NRA/B-8"] || Object.values(byKey)[0];
+                $("category2").value = String(startB.catIndex);
+                populateTargets(startB.catIndex, "2");
+                $("target2").value = startB.organization + "/" + startB.identifier;
+                $("distHint2").textContent = "(native ≈ " + startB.distanceYards.toFixed(1) + " yd)";
             })
             .catch(() => {
                 $("urlBox").textContent = "Could not load target list. Please reload the page.";
