@@ -893,6 +893,23 @@ module Targets =
                     |]
             }
 
+        // Finals variant: in ISSF finals a shot scoring 9.7+ on the rapid fire
+        // target counts as a hit, so this version shows only that 9.7 boundary as a
+        // single ring (no numbers, no other rings). By decimal scoring the 9.7 line
+        // is 0.7 of the way from the 9-ring (180mm) to the 10-ring (100mm) =
+        // 124mm diameter. The black "bull" ring stays so the aiming black is drawn
+        // and the 9.7 line strokes white against it. Inherits paper/distance/lines.
+        let rf25final =
+            { rf25 with
+                Identifier = "RF25-Final"
+                Name = "25m Rapid Fire Pistol Target (Final, 9.7 hit ring)"
+                Rings =
+                    [|  ring "9.7" (mmdi 124.0) |> black |> noLabel
+                        ring "bull" (mmdi 500.0) |> black |> noLabel
+                    |]
+                LabelClockPositions = [||]
+            }
+
         let rifleTargets =
             [|  r300
                 r50
@@ -903,6 +920,7 @@ module Targets =
             [|  p25
                 p50
                 rf25
+                rf25final
                 ap10
             |]
 
